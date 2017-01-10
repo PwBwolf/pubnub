@@ -8,8 +8,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
 var config = require('./config/config')
-var pnUser = require('./routes/pnUser');
-var pnChannel = require('./routes/pnChannel')
+var pnUser = require('./routes/userRoutes');
+var pnChannel = require('./routes/channelRoutes')
 /**
  * Create our Express application
  */
