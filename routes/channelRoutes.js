@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var jwtDecode = require('jwt-decode');
+var userService = require('../services/userService');
+var channelService = require('../services/pubnubService');
 
 router.post('/create/channel', function (req, res, next) {
     var decodedToken = jwtDecode(req.headers.token);

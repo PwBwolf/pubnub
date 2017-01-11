@@ -15,9 +15,12 @@ router.get('/userInfo', function(req, res, next) {
   userService.findUser(decodedToken.uid, function (user) {
     res.status(201).send({
       user: user.toJSON(),
-      message: 'record saved in metadata'
+      message: 'User found'
     });
-  })
+  }, function(err) {
+    res.status(400).json(err);
+  });
+
 });
 
 router.post('/enroll', function (req, res, next) {

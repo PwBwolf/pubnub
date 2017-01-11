@@ -1,4 +1,5 @@
 var pnUserModel = require('../models/pubnubUserModel');
+mongoose.Promise = Promise;
 
 exports.create = function (user, callback, errback) {
     console.log('service running make record for this user,', user)
