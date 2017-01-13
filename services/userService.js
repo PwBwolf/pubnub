@@ -25,7 +25,17 @@ exports.findUser = function (uid, callback, errback) {
 
 
 exports.inactiveChat= function (chatChannel, callback, errback) {
-    pnUserModel.update({"user_id": {"$in":chatChannel.user_id}},{new_messages: 0},function (err, channel) {
+    pnUserModel.update(
+        {
+            'user_id': chatChannel.user_id,
+            'channels.channel': {"$in":chatChannel.channel}
+        },
+        {
+            '$set': {
+                'channels.$.new_messages': 0
+            }
+        },
+        function (err, channel) {
         if (err) {
             errback(err);
             return;
