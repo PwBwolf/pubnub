@@ -47,7 +47,7 @@ exports.createChannel = function (newChannel,  callback, errback) {
     })
 };
 
-exports.deleteChannel = function (recordId, callback, errback) {
+exports.unsubscribeChannel = function (recordId, callback, errback) {
 
 };
 

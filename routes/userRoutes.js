@@ -58,13 +58,20 @@ router.post('/messageSent', function (req, res, next) {
 
 });
 
+
+//will accept an array of channels.
 router.post('/closedWindow', function (req,res,next) {
-  var tokenPay = jwtDecode(req.headers.token);
-
-})
-
-router.post('/logout', function (req, res, next) {
-  var tokenPay = jwtDecode(req.headers.token);
+    var tokenPay = jwtDecode(req.headers.token);
+    var inactiveCh = {
+        user_id: tokenPay.uid,
+        channel: req.body.channel
+    }
+    userService.inactiveChat(inactiveCh, function (status) {
+        res.status(201).send({
+            status: status,
+            message: 'channel is inactive'
+        })
+    })
 })
 
 

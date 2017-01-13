@@ -22,30 +22,38 @@ exports.findUser = function (uid, callback, errback) {
     })
 };
 
-exports.deleteChannel = function (recordId, callback, errback) {
 
-};
 
 exports.inactiveChat= function (chatChannel, callback, errback) {
-
+    pnUserModel.update({"user_id": {"$in":chatChannel.user_id}},{new_messages: 0},function (err, channel) {
+        if (err) {
+            errback(err);
+            return;
+        }
+        callback(channel)
+    })
 };
 
 exports.addChannel= function (chatChannel, callback, errback) {
     console.log(chatChannel.members);
-    memebers = chatChannel.members
-    for ( var i = 0; i < members.length; i++) {
-        pnUserModel.findOneAndUpdate({user_id: members[i]}, {$push: {"messages": {title: title, msg: msg}}}, function(err, user) {
-            if (err) {
-                errback(err);
-                return;
-            }
-
-            if (!user) {
-                errback({message: 'that users does not exist'});
-                return;
-            }
-        });
-    }
+    users = chatChannel.members;
+    console.log(users)
+    pnUserModel.find({"user_id": {"$in":users}}).exec(function (err, users) {
+        console.log('here are the users ',users.channel)
+    });
+    // for ( var i = 0; i < members.length; i++) {
+    //     pnUserModel.findOneAndUpdate({user_id: members[i]}, {$push: {"channel": chatChannel.channel}}, function(err, user) {
+    //         if (err) {
+    //             errback(err);
+    //             return;
+    //         }
+    //
+    //         if (!user) {
+    //             errback({message: 'that users does not exist'});
+    //             return;
+    //         }
+    //     });
+    // }
     callback({success:true})
 };
 

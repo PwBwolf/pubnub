@@ -6,10 +6,7 @@ var userSchema = new mongoose.Schema({
     channel_group: {type: String, required: true},
     auth_key: {type: String},
     channels: [{
-        channel: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'channel'
-        },
+        name: {type: String},
         last_access: {type: Date},
         status: {type: String},
         access_history: [{start_time: Date, end_time: Date}],
