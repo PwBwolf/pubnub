@@ -1,9 +1,9 @@
 var config = require("../config/config")
-var pubnub = require("pubnub")({
-    ssl           : true,
-    publish_key   : config.pubnub.publishKey,
-    subscribe_key : config.pubnub.subscribeKey
-});
+// var pubnub = require("pubnub")({
+//     ssl           : true,
+//     publish_key   : config.pubnub.publishKey,
+//     subscribe_key : config.pubnub.subscribeKey
+// });
 
 exports.pubnubSubscribeChannel = function (channel, callback, errback) {
     pubnub.subscribe({
@@ -52,3 +52,13 @@ exports.unsubscribeChannelGroup  = function(channelInfo, callback, errback) {
         },
     });
 }
+
+exports.grantChannelGroup = function (user) {
+    if(err) {
+
+    } else {
+
+    }
+
+    return res.status(200).send(user);
+};

@@ -29,8 +29,8 @@ app.use(cookieParser());
 /**
  * Map routes with routers
  */
-app.use('/pubnubUser', pnUser);
-app.use('/pubnubChannel', pnChannel)
+app.use('/user', pnUser);
+app.use('/channel', pnChannel)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

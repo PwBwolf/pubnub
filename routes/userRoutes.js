@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var userService = require('../services/userService');
+var channelService = require('../services/channelService')
 var jwtDecode = require('jwt-decode');
 var config = require('../config/config');
 
@@ -41,22 +42,30 @@ router.post('/enroll', function (req, res, next) {
   });
 });
 
-router.delete('/channel/fromChannelGroup', function (req, res, next) {
 
-  res.send('deleting channel from group channel')
+router.post('/messageSent', function (req, res, next) {
+  console.log('user sent a message', req.body.channel);
+  var decodedToken = jwtDecode(req.headers.token);
+  channelService.getChannelMembers(req.body.channel, function (channelDetails) {
+    var sender = decodedToken.uid;
+    userService.channelNotification(channelDetails, function (notification) {
+      res.status(201).send({
+        notification: notification,
+        message: 'members notified of new message'
+      });
+    })
+  })
+
 });
 
-router.post('/update/lastAccessed', function (req, res, next) {
-  res.send('updated last accessed time for channel in channelGroup')
-});
+router.post('/closedWindow', function (req,res,next) {
+  var tokenPay = jwtDecode(req.headers.token);
 
-router.post('/logout/presence', function (req, res, next) {
-  res.send('updated pubnub wuith the presence of the GroupChannel')
-});
+})
 
-router.post('/login/presence', function (req, res, next) {
-  res.send('updated pubnub wuith the presence of the GroupChannel')
-});
+router.post('/logout', function (req, res, next) {
+  var tokenPay = jwtDecode(req.headers.token);
+})
 
 
 

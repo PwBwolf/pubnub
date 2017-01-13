@@ -8,7 +8,7 @@ var userSchema = new mongoose.Schema({
     channels: [{
         channel: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Channel'
+            ref: 'channel'
         },
         last_access: {type: Date},
         status: {type: String},
