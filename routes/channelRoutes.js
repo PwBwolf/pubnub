@@ -25,10 +25,16 @@ router.post('/create', function (req, res, next) {
 });
 
 router.get('/channel/:id', function (req, res, next) {
+
 });
 
-router.delete('/channel/fromChannelGroup', function (req, res, next) {
-    var decodedToken = jwtDecode(req.headers.token);
+router.post('/unsubscribe/:id', function (req, res, next) {
+    channelService.leaveChannel(unsubscribe, function (status) {
+        res.status(201)
+            .send(status)
+    }, function (err) {
+        res.status(400).json(err);
+    })
 });
 
 router.put('/displayName', function (req, res, next) {

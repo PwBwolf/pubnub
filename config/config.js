@@ -6,6 +6,10 @@ var config = {
         subscribeKey: 'sub-c-e5416f74-c637-11e6-979a-02ee2ddab7fe',
         SecretKey: 'sec-c-MzFkZjhlZWMtMGI1NC00M2RlLTk2OGUtYjU3MDZmZjBlZTk1'
     },
+    glxChannels: {
+        ubc: 'glxuserbrodcastchannel',
+        tbc: 'glxtrendingbrodcastchannel'
+    },
     database: {
         production: {
             url: 'mongodb://localhost:27017/pubnub'

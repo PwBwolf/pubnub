@@ -1,10 +1,5 @@
 var channelModel = require('../models/channelModel');
 
-exports.updateDisplayName = function (recordId, callback, errback) {
-
-};
-
-
 exports.getChannel = function (channelId, callback, errback) {
 
 };
@@ -47,8 +42,15 @@ exports.createChannel = function (newChannel,  callback, errback) {
     })
 };
 
-exports.unsubscribeChannel = function (recordId, callback, errback) {
-
+exports.leaveChannel = function (recordId, callback, errback) {
+    // recordId.members must be an array
+    channelModel.update({name: recordId.channel},{ $pullAll: {member: recordId.members}}, function (err, result) {
+        if(err) {
+            errback(err);
+            return
+        }
+        callback(result)
+    });
 };
 
 

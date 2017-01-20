@@ -7,9 +7,9 @@ var config = require('../config/config');
 
 
 
-/* GET users listing. */
+/* GET users listing. /user */
 
-router.get('/userInfo', function(req, res, next) {
+router.get('/info', function(req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
   var uid = decodedToken.uid
   console.log(uid);
@@ -23,56 +23,118 @@ router.get('/userInfo', function(req, res, next) {
   });
 
 });
+//glxtrendingchannels
+//glxpublicannouncement
+
 
 router.post('/enroll', function (req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
   var newUser = {
-    user_id: decodedToken.uid,
-    channel_group: decodedToken.uid
+      user_id: decodedToken.uid,
+      channel_groups: [decodedToken.uid],
+      channels: [{
+          name: config.glxChannels.ubc,
+          status: false,
+          new_messages: 1,
+          user_channel_group: decodedToken.uid
+      },{
+          name: config.glxChannels.tbc,
+          status: false,
+          new_messages: 1,
+          user_channel_group: decodedToken.uid
+      }
+      ]
   };
   console.log(newUser);
   userService.create(newUser, function (user) {
-    console.log(user);
-    res.status(201).send({
-      user: user.toJSON(),
-      message: 'record saved in metadata'
-    });
+
+      console.log(user);
+      res.status(201).send({
+          user: user.toJSON(),
+          message: 'record saved in metadata'
+      });
   }, function(err) {
     res.status(400).json(err);
   });
 });
 
+router.put('/readMessage', function (req, res, next) {
+    //when a user read message change history of new message to zero
+    var decodedToken = jwtDecode(req.headers.token);
+    var userViewed= {
+        user_id :decodedToken.uid,
+        name: req.body.name
+    };
+    userService.messageRead(userViewed, function (status) {
+        res.status(201).send({
+            success: {status:201},
+            message: 'message updated as read'
+        });
+    }, function (err) {
+        console.log(err);
+        res.status(401).json(err);
+    })
+});
+
+//will accept an array of channels that will mark
+router.put('/closedWindow', function (req,res,next) {
+    if (!req.body.names || req.body.names.length < 1) {
+        res.status(400).send({
+            error: {
+                status: 400
+            },
+            message: 'Specify at least one channel that user is no longer active in'
+        })
+    }
+    var tokenPay = jwtDecode(req.headers.token);
+    var inactiveChats = {
+        user_id: tokenPay.uid,
+        names: req.body.names
+    };
+    userService.inactiveChat(inactiveChats, function (status) {
+        res.status(200).send({
+            status: 'updated',
+            message: 'channel is inactive'
+        })
+    }, function (err) {
+        res.status(401).send({
+            error: {
+                status: 401
+            },
+            message: 'status of inactive chat not completerd'
+        })
+    })
+});
 
 router.post('/messageSent', function (req, res, next) {
-  console.log('user sent a message', req.body.channel);
-  var decodedToken = jwtDecode(req.headers.token);
-  channelService.getChannelMembers(req.body.channel, function (channelDetails) {
-    var sender = decodedToken.uid;
-    userService.channelNotification(channelDetails, function (notification) {
-      res.status(201).send({
-        notification: notification,
-        message: 'members notified of new message'
-      });
+    console.log('user sent a message', req.body.channel);
+    var decodedToken = jwtDecode(req.headers.token);
+    channelService.getChannelMembers(req.body.channel, function (channelDetails) {
+        var sender = decodedToken.uid;
+        console.log(channelDetails);
+        res.status(201).send({
+            notification: channelDetails,
+            message: 'members notified of new message'
+        });
+        // userService.channelNotification(channelDetails, function (notification) {
+        //     res.status(201).send({
+        //         notification: notification,
+        //         message: 'members notified of new message'
+        //     });
+        // })
     })
-  })
 
 });
 
 
-//will accept an array of channels.
-router.post('/closedWindow', function (req,res,next) {
-    var tokenPay = jwtDecode(req.headers.token);
-    var inactiveCh = {
-        user_id: tokenPay.uid,
-        channel: req.body.channel
-    }
-    userService.inactiveChat(inactiveCh, function (status) {
-        res.status(201).send({
-            status: status,
-            message: 'channel is inactive'
-        })
-    })
-})
+function validateReq(req, res, next){
+    console.log('Validating req');
+    if(!req.body.password){
+        return res.send(500, 'Need a password');
+    };
+    next();
+};
+
 
 
 
