@@ -5,7 +5,7 @@ var channelSchema = new mongoose.Schema({
     members: [{ type: String, required: true }],
     history: [{
         member:{ type: String, required: true },
-        start_time: {type:Date},
+        start_time: {type:Date, default:Date.now},
         end_time: {type:Date}
     }],
     displayName: {type: String},

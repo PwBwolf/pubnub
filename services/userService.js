@@ -53,7 +53,6 @@ exports.messageRead = function (channel, callback, errback) {
 }
 
 exports.inactiveChat= function (chatChannel, callback, errback) {
-
     pnUserModel.update(
         {
             'user_id': chatChannel.user_id,
@@ -78,36 +77,52 @@ exports.inactiveChat= function (chatChannel, callback, errback) {
 exports.addChannel= function (chatChannel, callback, errback) {
     console.log(chatChannel.members);
     users = chatChannel.members;
-    console.log(users)
-    pnUserModel.insert({
-        "user_id": {"$in":users}
-    }).exec(function (err, users) {
-        console.log('here are the users ',users.channel)
-    });
-    // for ( var i = 0; i < members.length; i++) {
-    //     pnUserModel.findOneAndUpdate({user_id: members[i]}, {$push: {"channel": chatChannel.channel}}, function(err, user) {
-    //         if (err) {
-    //             errback(err);
-    //             return;
-    //         }
-    //
-    //         if (!user) {
-    //             errback({message: 'that users does not exist'});
-    //             return;
-    //         }
-    //     });
-    // }
-    callback({success:true})
+    console.log('updating these users with this chat', users)
+    var newChannel = {
+        name: chatChannel.name,
+        new_messages: 1
+    };
+    pnUserModel.update(
+        {
+            "user_id": {$in:users}
+        },
+        {
+            "$push": {
+                "channels": newChannel
+            }
+        },
+        {
+            multi:true
+        },
+        function (err, channel) {
+            if (err) {
+                errback(err);
+                return
+            }
+            callback(channel)
+        }
+    )
 };
 
 exports.channelNotification = function (channel, callback, errback) {
     channel = channel.name;
-    users =channel.members;
+    users = channel.members;
     console.log('users service updaing members of new message');
-    pnUserModel.update({"user_id": {"$in":users}, "channels.name": channel}, {new_messages: 1}, {multi: true}, function (err, status) {
-        if (err) {
-            errback(err);
-            return;
+    pnUserModel.update(
+        {
+            "user_id": {$in:users},
+            "channels.name": channel.name
+        },
+        {
+            new_messages: 1
+        },
+        {
+            multi: true
+        },
+        function (err, status) {
+            if (err) {
+                errback(err);
+                return;
         }
         callback(status)
     })

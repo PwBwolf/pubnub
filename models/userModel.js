@@ -8,7 +8,7 @@ var userSchema = new mongoose.Schema({
     channels: [{
         name: {type: String},
         last_access: { type: Date, default: Date.now },
-        status: {type: String},
+        status: {type: String, default: false },
         new_messages: {type: Number},
         user_channel_group: {type: String}
     }]

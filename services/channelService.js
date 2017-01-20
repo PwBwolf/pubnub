@@ -19,8 +19,14 @@ exports.createChannel = function (newChannel,  callback, errback) {
     /*
         TODO Implemnet a search functionality for looking up existing channels
     */
-    members = newChannel.members;
-    hist = [];
+    var members = newChannel.members;
+    var hist = [];
+    var type = 0;
+    if(members.length > 2 ) {
+        type = 1;
+        console.log('updating as group chat');
+    }
+
     for ( var i = 0; i < members.length; i++) {
         hist.push({
             member: members[i],
@@ -30,7 +36,8 @@ exports.createChannel = function (newChannel,  callback, errback) {
     var channel = {
         name: newChannel.name,
         members: newChannel.members,
-        history: hist
+        history: hist,
+        type: type
     };
     console.log(channel);
     channelModel.create(channel, function (err, user) {
