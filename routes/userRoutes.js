@@ -23,9 +23,6 @@ router.get('/info', function(req, res, next) {
   });
 
 });
-//glxtrendingchannels
-//glxpublicannouncement
-
 
 router.post('/enroll', function (req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
