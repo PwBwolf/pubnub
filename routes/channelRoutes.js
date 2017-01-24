@@ -34,36 +34,34 @@ router.post('/create', function (req, res, next) {
     console.log(newChannel);
     async.series([
         function (callback) {
-            console.log('make this new channel', newChannel)
+            console.log('make this new channel', newChannel);
             //do some stuff
             channelService.createChannel(newChannel, function (channel) {
                 console.log('channel created successfully', channel);
-                return channel
+                callback(null, channel)
             }, function(err) {
                 console.log('Channel was not created successfully');
                 res.status(401).json(err);
-            }),
-            callback(null, 'channel created successfully')
+            });
         },
         function (callback) {
             console.log('make a record in users document of this channel', newChannel);
             userService.addChannel(newChannel, function (results) {
                 console.log(results)
+                callback(null, results)
             }, function(err) {
                 console.log('Channel not saved in users properly');
                 res.status(401).json(err);
             });
-            callback(null, 'two')
         },
         function (callback) {
             console.log('tell pub nub to grant these users write access to these channels', newChannel.members);
             pubnubService.grantChannelGroup(newChannel, function (results) {
-                console.log(results);
+                callback(null, {succes: true, message: 'grants authorized on channel',auth_ids: results})
             }), function (err) {
                 console.log('Pubnub grant failed')
                 res.status(401).json(err);
             }
-            callback(null, 'pubnub grant successfull')
         }
     ], function(err, results) {
         if(err) {

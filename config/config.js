@@ -4,7 +4,7 @@ var config = {
     pubnub: {
         publishKey: 'pub-c-3e24f455-c767-49fc-bdea-a5eb8139db66',
         subscribeKey: 'sub-c-b3f41a24-bb20-11e6-a856-0619f8945a4f',
-        SecretKey: 'sec-c-YTI0YWY1YzMtOWMxOC00ODAyLThhNDItMGU1NzE3ZTRjMmU5'
+        secretKey: 'sec-c-YTI0YWY1YzMtOWMxOC00ODAyLThhNDItMGU1NzE3ZTRjMmU5'
     },
     glxChannels: {
         ubc: 'glxuserbrodcastchannel',

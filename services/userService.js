@@ -127,3 +127,9 @@ exports.channelNotification = function (channel, callback, errback) {
         callback(status)
     })
 }
+
+exports.getAuthIds = function (members, callback, errback) {
+    pnUserModel.find({
+        "uid": {$in:members}
+    })
+};

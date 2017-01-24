@@ -7,8 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
-var config = require('./config/config');
-var PubNub = require('pubnub');
+var config = require('./config/config')
 var pnUser = require('./routes/userRoutes');
 var pnChannel = require('./routes/channelRoutes')
 
