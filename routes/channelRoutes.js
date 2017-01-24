@@ -18,7 +18,7 @@ router.put('/newMessage', function (req, res, next) {
             console.log('failed to update users with new message')
         })
     }, function (err) {
-        console.log('faild to find that record')
+        console.log('failed to find that record')
         res.status(401).json(err)
     })
 });

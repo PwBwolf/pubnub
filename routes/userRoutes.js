@@ -92,37 +92,15 @@ router.put('/closedWindow', function (req,res,next) {
     };
     userService.inactiveChat(inactiveChats, function (status) {
         res.status(200).send({
-            status: 'updated',
+            status: {status:200},
             message: 'channel is inactive'
         })
     }, function (err) {
         res.status(401).send({
-            error: {
-                status: 401
-            },
-            message: 'status of inactive chat not completerd'
+            error: {status: 401},
+            message: err
         })
     })
-});
-
-router.post('/messageSent', function (req, res, next) {
-    console.log('user sent a message', req.body.channel);
-    var decodedToken = jwtDecode(req.headers.token);
-    channelService.getChannelMembers(req.body.channel, function (channelDetails) {
-        var sender = decodedToken.uid;
-        console.log(channelDetails);
-        res.status(201).send({
-            notification: channelDetails,
-            message: 'members notified of new message'
-        });
-        // userService.channelNotification(channelDetails, function (notification) {
-        //     res.status(201).send({
-        //         notification: notification,
-        //         message: 'members notified of new message'
-        //     });
-        // })
-    })
-
 });
 
 
