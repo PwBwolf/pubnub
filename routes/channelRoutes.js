@@ -5,23 +5,12 @@ var userService = require('../services/userService');
 var channelService = require('../services/channelService');
 var pubnubService = require('../services/pubnubService')
 var async = require('async');
+
+
 router.get('/channel/:id', function (req, res, next) {
-
+///to be done
 });
 
-router.put('/newMessage', function (req, res, next) {
-    var decodedToken = jwtDecode(req.headers.token);
-    channelService.getChannelMembers(req.body.name, function (channel) {
-        userService.channelNotification(channel, function (status) {
-            res.status(201).send(status)
-        }, function (err) {
-            console.log('failed to update users with new message')
-        })
-    }, function (err) {
-        console.log('failed to find that record')
-        res.status(401).json(err)
-    })
-});
 
 router.post('/create', function (req, res, next) {
     var decodedToken = jwtDecode(req.headers.token);
@@ -74,7 +63,21 @@ router.post('/create', function (req, res, next) {
 
 });
 
+router.put('/newMessage', function (req, res, next) {
+    channelService.getChannelMembers(req.body.name, function (channel) {
+        userService.channelNotification(channel, function (status) {
+            res.status(201).send(status)
+        }, function (err) {
+            console.log('failed to update users with new message')
+        })
+    }, function (err) {
+        console.log('failed to find that record')
+        res.status(401).json(err)
+    })
+});
+
 router.post('/unsubscribe/:id', function (req, res, next) {
+    //to be done
     channelService.leaveChannel(unsubscribe, function (status) {
         res.status(201)
             .send(status)
