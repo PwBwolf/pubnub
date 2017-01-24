@@ -26,9 +26,11 @@ router.get('/info', function(req, res, next) {
 
 router.post('/enroll', function (req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
+  var authKey = Date.now() + decodedToken.uid;
   var newUser = {
-      user_id: decodedToken.uid,
+      uid: decodedToken.uid,
       channel_groups: [decodedToken.uid],
+      auth_key: authKey,
       channels: [{
           name: config.glxChannels.ubc,
           status: false,
@@ -59,7 +61,7 @@ router.put('/readMessage', function (req, res, next) {
     //when a user read message change history of new message to zero
     var decodedToken = jwtDecode(req.headers.token);
     var userViewed= {
-        user_id :decodedToken.uid,
+        uid :decodedToken.uid,
         name: req.body.name
     };
     userService.messageRead(userViewed, function (status) {
@@ -85,7 +87,7 @@ router.put('/closedWindow', function (req,res,next) {
     }
     var tokenPay = jwtDecode(req.headers.token);
     var inactiveChats = {
-        user_id: tokenPay.uid,
+        uid: tokenPay.uid,
         names: req.body.names
     };
     userService.inactiveChat(inactiveChats, function (status) {

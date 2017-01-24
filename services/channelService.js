@@ -1,12 +1,8 @@
 var channelModel = require('../models/channelModel');
 
 exports.getChannel = function (channelId, callback, errback) {
-
-};
-
-exports.getChannelMembers = function (channelId, callback, errback) {
     console.log(channelId);
-    channelModel.findOne(channelId, function (err, channelDetails) {
+    channelModel.findOne({"name":channelId}, function (err, channelDetails) {
         if (err) {
             errback(err);
             return
@@ -15,7 +11,18 @@ exports.getChannelMembers = function (channelId, callback, errback) {
     })
 };
 
-exports.createChannel = function (newChannel,  callback, errback) {
+exports.getChannelMembers = function (channelId, callback, errback) {
+    console.log(channelId);
+    channelModel.findOne({"name":channelId}, function (err, channelDetails) {
+        if (err) {
+            errback(err);
+            return
+        }
+        callback(channelDetails);
+    })
+};
+
+exports.createChannel = function (newChannel, callback, errback) {
     /*
         TODO Implemnet a search functionality for looking up existing channels
     */
@@ -48,6 +55,8 @@ exports.createChannel = function (newChannel,  callback, errback) {
         callback(user)
     })
 };
+
+
 
 exports.leaveChannel = function (recordId, callback, errback) {
     // recordId.members must be an array

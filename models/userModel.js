@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
-    user_id: {type: String, required: true},
+    uid: {type: String, required: true},
     channel_pub: {type: String},
     channel_groups: [{type: String}],
     auth_key: {type: String},

@@ -3,6 +3,25 @@ var router = express.Router();
 var jwtDecode = require('jwt-decode');
 var userService = require('../services/userService');
 var channelService = require('../services/channelService');
+var pubnubService = require('../services/pubnubService')
+var async = require('async');
+router.get('/channel/:id', function (req, res, next) {
+
+});
+
+router.put('/newMessage', function (req, res, next) {
+    var decodedToken = jwtDecode(req.headers.token);
+    channelService.getChannelMembers(req.body.name, function (channel) {
+        userService.channelNotification(channel, function (status) {
+            res.status(201).send(status)
+        }, function (err) {
+            console.log('failed to update users with new message')
+        })
+    }, function (err) {
+        console.log('faild to find that record')
+        res.status(401).json(err)
+    })
+});
 
 router.post('/create', function (req, res, next) {
     var decodedToken = jwtDecode(req.headers.token);
@@ -13,23 +32,47 @@ router.post('/create', function (req, res, next) {
         members: members
     };
     console.log(newChannel);
+    async.series([
+        function (callback) {
+            console.log('make this new channel', newChannel)
+            //do some stuff
+            channelService.createChannel(newChannel, function (channel) {
+                console.log('channel created successfully', channel);
+                return channel
+            }, function(err) {
+                console.log('Channel was not created successfully');
+                res.status(401).json(err);
+            }),
+            callback(null, 'channel created successfully')
+        },
+        function (callback) {
+            console.log('make a record in users document of this channel', newChannel);
+            userService.addChannel(newChannel, function (results) {
+                console.log(results)
+            }, function(err) {
+                console.log('Channel not saved in users properly');
+                res.status(401).json(err);
+            });
+            callback(null, 'two')
+        },
+        function (callback) {
+            console.log('tell pub nub to grant these users write access to these channels', newChannel.members);
+            pubnubService.grantChannelGroup(newChannel, function (results) {
+                console.log(results);
+            }), function (err) {
+                console.log('Pubnub grant failed')
+                res.status(401).json(err);
+            }
+            callback(null, 'pubnub grant successfull')
+        }
+    ], function(err, results) {
+        if(err) {
+            console.log('channels was not created')
+            res.status(401).json(err)
+        }
+        res.status(201).send(results)
+    })
 
-    channelService.createChannel(newChannel, function (channel) {
-        console.log('channel created successfully')
-        userService.addChannel(newChannel, function (status) {
-            res.status(201)
-                .send(status)
-        }, function(err) {
-            console.log('Channel not saved in users properly');
-            res.status(401).json(err);
-        })
-    }, function(err) {
-        console.log('Channel was not created successfully');
-        res.status(401).json(err);
-    });
-});
-
-router.get('/channel/:id', function (req, res, next) {
 
 });
 

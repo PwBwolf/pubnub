@@ -15,7 +15,7 @@ exports.create = function (user, callback, errback) {
 
 exports.findUser = function (uid, callback, errback) {
     console.log('find this uid: ', uid);
-    pnUserModel.findOne({user_id: uid}, function (err, user) {
+    pnUserModel.findOne({uid: uid}, function (err, user) {
         if (err) {
             console.log(err);
             errback(err);
@@ -35,7 +35,7 @@ exports.messageRead = function (channel, callback, errback) {
     console.log(channel);
     pnUserModel.update(
         {
-            'user_id': channel.user_id,
+            'uid': channel.uid,
             'channels.name': channel.name
         }, {
             '$set': {
@@ -55,7 +55,7 @@ exports.messageRead = function (channel, callback, errback) {
 exports.inactiveChat= function (chatChannel, callback, errback) {
     pnUserModel.update(
         {
-            'user_id': chatChannel.user_id,
+            'uid': chatChannel.uid,
             'channels.name': { $in: chatChannel.names}
         },
         {
@@ -84,7 +84,7 @@ exports.addChannel= function (chatChannel, callback, errback) {
     };
     pnUserModel.update(
         {
-            "user_id": {$in:users}
+            "uid": {$in:users}
         },
         {
             "$push": {
@@ -110,7 +110,7 @@ exports.channelNotification = function (channel, callback, errback) {
     console.log('users service updaing members of new message');
     pnUserModel.update(
         {
-            "user_id": {$in:users},
+            "uid": {$in:users},
             "channels.name": channel.name
         },
         {
