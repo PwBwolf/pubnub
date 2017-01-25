@@ -7,7 +7,7 @@ var pubnubService = require('../services/pubnubService')
 var async = require('async');
 
 
-router.get('/channel/:id', function (req, res, next) {
+router.get('/:id', function (req, res, next) {
 ///to be done
 });
 
@@ -66,7 +66,10 @@ router.post('/create', function (req, res, next) {
 router.put('/newMessage', function (req, res, next) {
     channelService.getChannelMembers(req.body.name, function (channel) {
         userService.channelNotification(channel, function (status) {
-            res.status(201).send(status)
+            res.status(201).send({
+                success: {status:201},
+                message: 'new message switch updated'
+            })
         }, function (err) {
             console.log('failed to update users with new message')
         })
@@ -76,9 +79,9 @@ router.put('/newMessage', function (req, res, next) {
     })
 });
 
-router.post('/unsubscribe/:id', function (req, res, next) {
+router.post('/unsubscribe', function (req, res, next) {
     //to be done
-    channelService.leaveChannel(unsubscribe, function (status) {
+    channelService.leaveChannel(req.body.member, function (status) {
         res.status(201)
             .send(status)
     }, function (err) {
@@ -86,7 +89,27 @@ router.post('/unsubscribe/:id', function (req, res, next) {
     })
 });
 
+router.put('addUser', function (req, res, next) {
+});
+
+
 router.put('/displayName', function (req, res, next) {
+    if (!req.body.displayName && !req.body.name) {
+        res.status(400).send({
+            success: {status:400},
+            message: 'bad request, req require displayName and name of channel'
+        })
+    }
+    channelService.updateDisplayName(req.body, function (display) {
+        res.status(201).send({success:{status:201}, message: 'updated display name'})
+    }, function (err) {
+            console.log(err)
+            res.status(401).send({
+                success: {status:401},
+                message: 'display name not updated correctly'
+            })
+        }
+    );
     res.send('update channel metadata with new display name');
 });
 

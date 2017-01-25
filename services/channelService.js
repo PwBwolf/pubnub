@@ -58,9 +58,9 @@ exports.createChannel = function (newChannel, callback, errback) {
 
 
 
-exports.leaveChannel = function (recordId, callback, errback) {
+exports.leaveChannel = function (channel, callback, errback) {
     // recordId.members must be an array
-    channelModel.update({name: recordId.channel},{ $pullAll: {member: recordId.members}}, function (err, result) {
+    channelModel.update({name: channel.channel},{ $pullAll: {member: recordId.member}}, function (err, result) {
         if(err) {
             errback(err);
             return
@@ -69,6 +69,21 @@ exports.leaveChannel = function (recordId, callback, errback) {
     });
 };
 
+exports.updateDisplayName = function (channel, callback, errback) {
+    channelModel.update({
+        name: channel.name
+    },{
+        '$set': {
+            displayName: channel.displayName
+        }
+    }, function (err, result) {
+        if(err) {
+            errback(err)
+            return
+        }
+        callback(result)
+    })
+}
 
 
 
