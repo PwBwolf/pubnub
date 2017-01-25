@@ -2,10 +2,16 @@ var channelModel = require('../models/channelModel');
 
 exports.getChannel = function (channelId, callback, errback) {
     console.log(channelId);
-    channelModel.findOne({"name":channelId}, function (err, channelDetails) {
+    channelModel.find({'name':channelId}, function (err, channelDetails) {
         if (err) {
             errback(err);
             return
+        }
+        if (!channelDetails.length) {
+            console.log("channel does not exist")
+            errback()
+            return
+
         }
         callback(channelDetails);
     })
@@ -13,10 +19,17 @@ exports.getChannel = function (channelId, callback, errback) {
 
 exports.getChannelMembers = function (channelId, callback, errback) {
     console.log(channelId);
-    channelModel.findOne({"name":channelId}, function (err, channelDetails) {
+    channelModel.find({'name':channelId}, function (err, result) {
         if (err) {
+            console.log("hey theres an error finding that channel")
             errback(err);
             return
+        }
+        if (!result.length) {
+            console.log("channel does not exist")
+            errback("channel does not exist")
+            return
+
         }
         callback(channelDetails);
     })
@@ -60,7 +73,7 @@ exports.createChannel = function (newChannel, callback, errback) {
 
 exports.leaveChannel = function (channel, callback, errback) {
     // recordId.members must be an array
-    channelModel.update({name: channel.channel},{ $pullAll: {member: recordId.member}}, function (err, result) {
+    channelModel.update({name: channel.name},{ $pullAll: {member: channel.member}}, function (err, result) {
         if(err) {
             errback(err);
             return
@@ -68,6 +81,31 @@ exports.leaveChannel = function (channel, callback, errback) {
         callback(result)
     });
 };
+
+exports.addMembers = function (channel, callback, errback) {
+    var hist = [];
+    for ( var i = 0; i < members.length; i++) {
+        hist.push({
+            member: members[i],
+            start_time: new Date()
+        });
+    }
+    channelModel.update({
+        name: channel.name
+    },{
+        "$push": {
+            "history": hist,
+            "members": channel.members
+        }
+    }, function (err, result) {
+        if (err) {
+            errback(err)
+            console.log('addMember service did not updated users successfully')
+            return
+        }
+        callback(result)
+    })
+}
 
 exports.updateDisplayName = function (channel, callback, errback) {
     channelModel.update({

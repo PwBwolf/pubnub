@@ -104,15 +104,4 @@ router.put('/closedWindow', function (req,res,next) {
 });
 
 
-function validateReq(req, res, next){
-    console.log('Validating req');
-    if(!req.body.password){
-        return res.send(500, 'Need a password');
-    };
-    next();
-};
-
-
-
-
 module.exports = router;

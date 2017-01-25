@@ -12,7 +12,7 @@ var pubnub = new PubNub({
     }
 });
 
-exports.grantChannelGroup = function (newChannel, callback, errback) {
+exports.grantChannel = function (newChannel, callback, errback) {
   //lookup users auth_ key in metadata, return there auth_id
     console.log(newChannel)
     var auth_ids = [];
