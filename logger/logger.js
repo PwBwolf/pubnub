@@ -1,14 +1,14 @@
 'use strict';
 
-var wintson = require('winston');
+var winston = require('winston');
 
 
-var logger = new (wintson.Logger) ({
-    ttransports: [
+var logger = new (winston.Logger) ({
+    transports: [
         new (winston.transports.File)({
             name: 'info-file',
             //this needs to be updated with the softlink when being deployed.
-            filename: 'filelog-info.log',
+            filename: 'logs/filelog-info.log',
             level: 'info',
             json: true,
             maxsize: 5242880,
@@ -19,7 +19,7 @@ var logger = new (wintson.Logger) ({
         new (winston.transports.File)({
             name: 'error-file',
             //this needs to be updated with the softlink when being deployed.
-            filename: 'filelog-error.log',
+            filename: 'logs/filelog-error.log',
             level: 'error',
             json: true,
             maxsize: 5242880,
@@ -36,7 +36,7 @@ var logger = new (wintson.Logger) ({
     ],
     exceptionHandlers: [
         new winston.transports.File({
-            filename: config.root + 'exception.log',
+            filename:'logs/exception.log',
             json: true,
             maxsize: 5242880,
             maxFiles: 50,
@@ -61,6 +61,10 @@ logger.logDebug = function (msg) {
 logger.logInfo = function (info) {
     logger.info(info);
 };
+
+logger.reqLog = function (level, des, req) {
+    logger.log(level, des, req)
+}
 
 module.exports = logger;
 

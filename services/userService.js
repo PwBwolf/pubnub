@@ -1,50 +1,57 @@
-var pnUserModel = require('../models/userModel');
+var pnUserModel = require('../models/userModel'),
+    logger = require('../logger/logger');
 
 exports.create = function (user, callback, errback) {
-    console.log('service running make record for this user,', user)
+    logger.log('info','userService - create - service running make record for this user', user)
     pnUserModel.create(user, function (err, user) {
         if (err) {
-            console.log(err);
+            logger.logError('userService - create - service had a problem saving user data');
             errback(err);
             return
         }
-
+        logger.logInfo('userService - create - service successful');
         callback(user)
     })
 };
 
 exports.getUser = function (uid, callback, errback) {
+    logger.log('info','userService - getUser - service returning user info with channels', uid)
     pnUserModel.find({uid: uid}).populate('channelInfo').exec(function(err, res) {
         if (err) {
-            console.log(err);
+            logger.logError('userService - getUser - service had a problem saving user data');
             errback(err);
             return
         }
-        console.log(res)
+        if (!user) {
+            logger.logError('userService - getUser - no chat record found for this user');
+            errback(err);
+            return
+        }
+        logger.logInfo('userService - create - service successful');
         callback(res)
     });
 }
 
 exports.findUser = function (uid, callback, errback) {
-    console.log('find this uid: ', uid);
+    logger.log('info','userService - findUser - service retrieving', uid)
     pnUserModel.findOne({uid: uid}, function (err, user) {
         if (err) {
-            console.log(err);
+            logger.logError('userService - findUser - error retrieving user');
             errback(err);
             return
         }
         if (!user) {
-            console.log({message: 'no chat record found for this user'});
-            errback({message: 'no chat record found for this user'});
-            return;
+            logger.logError('userService - findUser - no chat record found for this user');
+            errback(err);
+            return
         }
-        console.log(user)
+        logger.logInfo('userService - findUser - service successful');
         callback(user)
     })
 };
 
 exports.messageRead = function (channel, callback, errback) {
-    console.log(channel);
+    logger.log('info','userService - messageRead - service marking channel read', channel);
     pnUserModel.update(
         {
             'uid': channel.uid,
@@ -56,15 +63,18 @@ exports.messageRead = function (channel, callback, errback) {
         },
         function (err, channel) {
             if (err) {
+                logger.logError('userService - messageRead - err marking chat as read');
                 errback(err);
                 return;
             }
+            logger.logInfo('userService - messageRead - marked chat as read');
             callback(channel)
         }
     )
 }
 
 exports.inactiveChat= function (chatChannel, callback, errback) {
+    logger.log('info','userService - inactiveChat - service marking channel read', channel);
     pnUserModel.update(
         {
             'uid': chatChannel.uid,
@@ -78,18 +88,19 @@ exports.inactiveChat= function (chatChannel, callback, errback) {
             }
         },
         function (err, channel) {
-        if (err) {
-            errback(err);
-            return;
-        }
-        callback(channel)
-    })
+            if (err) {
+                logger.logError('userService - inactiveChat - err marking chat as read');
+                errback(err);
+                return;
+            }
+            logger.logInfo('userService - inactiveChat - updated as inactive')
+            callback(channel)
+        })
 };
 
 exports.addChannel= function (chatChannel, callback, errback) {
-    console.log(chatChannel.members);
+    logger.log('info','userService - addChannel - service adding channel', channel);
     users = chatChannel.members;
-    console.log('updating these users with this chat', users)
     var newChannel = {
         name: chatChannel.name,
         new_messages: 1
@@ -108,18 +119,20 @@ exports.addChannel= function (chatChannel, callback, errback) {
         },
         function (err, channel) {
             if (err) {
+                logger.logError('userService - addChannel - err marking chat as read');
                 errback(err);
                 return
             }
+            logger.logInfo('userService - addChannel - added channel to users');
             callback(channel)
         }
     )
 };
 
 exports.channelNotification = function (channel, callback, errback) {
+    logger.log('info','userService - channelNotification - updating members of new message', channel);
     channel = channel.name;
     users = channel.members;
-    console.log('users service updaing members of new message');
     pnUserModel.update(
         {
             "uid": {$in:users},
@@ -133,11 +146,14 @@ exports.channelNotification = function (channel, callback, errback) {
         },
         function (err, status) {
             if (err) {
+                logger.logError('userService - channelNotification - err marking chat as read');
                 errback(err);
                 return;
+            }
+            logger.logInfo('userService - channelNotification - updated channel with notification')
+            callback(status)
         }
-        callback(status)
-    })
+    )
 }
 
 exports.getAuthIds = function (members, callback, errback) {
