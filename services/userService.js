@@ -13,6 +13,18 @@ exports.create = function (user, callback, errback) {
     })
 };
 
+exports.getUser = function (uid, callback, errback) {
+    pnUserModel.find({uid: uid}).populate('channelInfo').exec(function(err, res) {
+        if (err) {
+            console.log(err);
+            errback(err);
+            return
+        }
+        console.log(res)
+        callback(res)
+    });
+}
+
 exports.findUser = function (uid, callback, errback) {
     console.log('find this uid: ', uid);
     pnUserModel.findOne({uid: uid}, function (err, user) {

@@ -8,6 +8,18 @@ var config = require('../config/config');
 
 
 /* GET users listing. /user */
+router.get('/userChannels', function (req, res, next) {
+    var decodedToken = jwtDecode(req.headers.token);
+    var uid = decodedToken.uid
+    userService.getUser(uid, function(user) {
+        res.status(201).send({
+            user: user,
+            message: 'User found'
+        });
+    }, function(err) {
+        res.status(400).json(err);
+    })
+})
 
 router.get('/info', function(req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
@@ -30,19 +42,19 @@ router.post('/enroll', function (req, res, next) {
   var newUser = {
       uid: decodedToken.uid,
       channel_groups: [decodedToken.uid],
-      auth_key: authKey,
-      channels: [{
-          name: config.glxChannels.ubc,
-          status: false,
-          new_messages: 1,
-          user_channel_group: decodedToken.uid
-      },{
-          name: config.glxChannels.tbc,
-          status: false,
-          new_messages: 1,
-          user_channel_group: decodedToken.uid
-      }
-      ]
+      auth_key: authKey
+      // channels: [{
+      //     name: config.glxChannels.ubc,
+      //     status: false,
+      //     new_messages: 1,
+      //     user_channel_group: decodedToken.uid
+      // },{
+      //     name: config.glxChannels.tbc,
+      //     status: false,
+      //     new_messages: 1,
+      //     user_channel_group: decodedToken.uid
+      // }
+      // ]
   };
   console.log(newUser);
   userService.create(newUser, function (user) {
