@@ -1,6 +1,8 @@
-var channelModel = require('../models/channelModel');
+var channelModel = require('../models/channelModel'),
+    logger = require('../logger/logger')
 
 exports.getChannel = function (channelId, callback, errback) {
+    logger.logInfo('')
     console.log(channelId);
     channelModel.find({'name':channelId}, function (err, channelDetails) {
         if (err) {
@@ -39,6 +41,7 @@ exports.createChannel = function (newChannel, callback, errback) {
     /*
         TODO Implemnet a search functionality for looking up existing channels
     */
+    logger.logInfo('info', 'channelRoutes - createChannel - service making new channel ', newChannel)
     var members = newChannel.members;
     var hist = [];
     var type = 0;

@@ -12,16 +12,16 @@ var config = {
     },
     database: {
         production: {
-            url: 'mongodb://localhost:27017/pubnub'
+            url: 'mongodb://10.0.0.141:27017/glx_chat'
         },
         qa: {
-            url: 'mongodb://localhost:27017/pubnub'
+            url: 'mongodb://10.0.0.141:27017/glx_chat'
         },
         development: {
-            url: 'mongodb://localhost:27017/pubnub'
+            url: 'mongodb://10.0.0.141:27017/glx_chat'
         },
         uat: {
-            url: 'mongodb://localhost:27017/pubnub'
+            url: 'mongodb://10.0.0.141:27017/glx_chat'
         }
     },
     port: process.env.PORT || '3000'
