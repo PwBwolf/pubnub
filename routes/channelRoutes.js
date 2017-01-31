@@ -130,7 +130,7 @@ router.post('/unsubscribe', function (req, res, next) {
                 },
                 message: 'new message switch updated'
             })
-    }, function (err) {
+    }, function (err    ) {
         logger.logError('channelRoutes - unsubscribe - there was an error on unsubscribing the user')
         res.status(401).send({
             error: {

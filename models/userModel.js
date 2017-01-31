@@ -19,6 +19,18 @@ var userSchema = new mongoose.Schema({
     }
 });
 
+userSchema.pre('save', function (next) {
+    var self = this;
+    user.find({uid : self.uid}, function (err, docs) {
+        if (!docs.length){
+            next();
+        } else {
+            console.log('user exists: ',self.uid);
+            next(new Error("User exists!"));
+        }
+    });
+});
+
 userSchema.virtual('channelInfo', {
     ref: 'channel',
     localField: 'channels.name',

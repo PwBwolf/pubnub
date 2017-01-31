@@ -127,7 +127,7 @@ router.put('/closedWindow', function (req,res,next) {
     };
     logger.log('info', 'userRoutes - closedWindow - updating these chats as inactive', inactiveChats);
     userService.inactiveChat(inactiveChats, function (status) {
-        logger.log('info', 'userRoutes - closedWindow - channels marked as read', status);
+        logger.log('info', 'userRoutes - closedWindow - channe  ls marked as read', status);
         res.status(200).send({
             success: {
                 status:200

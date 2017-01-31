@@ -73,7 +73,7 @@ exports.messageRead = function (channel, callback, errback) {
     )
 }
 
-exports.inactiveChat= function (chatChannel, callback, errback) {
+exports.inactiveChat = function (chatChannel, callback, errback) {
     logger.log('info','userService - inactiveChat - service marking channel read', channel);
     pnUserModel.update(
         {
@@ -98,7 +98,7 @@ exports.inactiveChat= function (chatChannel, callback, errback) {
         })
 };
 
-exports.addChannel= function (chatChannel, callback, errback) {
+exports.addChannel = function (chatChannel, callback, errback) {
     logger.log('info','userService - addChannel - service adding channel', channel);
     users = chatChannel.members;
     var newChannel = {
