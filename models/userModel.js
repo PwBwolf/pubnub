@@ -21,12 +21,14 @@ var userSchema = new mongoose.Schema({
 
 userSchema.pre('save', function (next) {
     var self = this;
-    user.find({uid : self.uid}, function (err, docs) {
-        if (!docs.length){
-            next();
+    user.find({uid : self.uid}, function (err, user) {
+        if(err) {
+            next(err);
+        } else if(user) {
+            var error = new Error("uid exists in database");
+            next(error);
         } else {
-            console.log('user exists: ',self.uid);
-            next(new Error("User exists!"));
+            next();
         }
     });
 });

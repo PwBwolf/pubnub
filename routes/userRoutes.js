@@ -22,7 +22,7 @@ router.get('/userChannels', function (req, res, next) {
             message: 'User found'
         });
     }, function(err) {
-        logger.log('error','userRoutes - userChannels - error retrieving data from database', err);
+
         res.status(400).send({
             error: {
                 status: 400
@@ -77,7 +77,7 @@ router.post('/enroll', function (req, res, next) {
           error: {
               status: 400
           },
-          message: err
+          message: err.toString()
     });
   });
 });

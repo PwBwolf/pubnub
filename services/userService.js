@@ -5,7 +5,7 @@ exports.create = function (user, callback, errback) {
     logger.log('info','userService - create - service running make record for this user', user)
     pnUserModel.create(user, function (err, user) {
         if (err) {
-            logger.logError('userService - create - service had a problem saving user data');
+            console.log(err);
             errback(err);
             return
         }
