@@ -42,4 +42,3 @@ userSchema.virtual('channelInfo', {
 var user = mongoose.model('user', userSchema, 'user');
 
 module.exports = user;
-

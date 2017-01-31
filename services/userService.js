@@ -22,7 +22,7 @@ exports.getUser = function (uid, callback, errback) {
             errback(err);
             return
         }
-        if (!user) {
+        if (!res) {
             logger.logError('userService - getUser - no chat record found for this user');
             errback(err);
             return
