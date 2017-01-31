@@ -99,7 +99,6 @@ exports.inactiveChat = function (chatChannel, callback, errback) {
 };
 
 exports.addChannel = function (chatChannel, callback, errback) {
-    logger.log('info','userService - addChannel - service adding channel', channel);
     users = chatChannel.members;
     var newChannel = {
         name: chatChannel.name,
@@ -119,11 +118,9 @@ exports.addChannel = function (chatChannel, callback, errback) {
         },
         function (err, channel) {
             if (err) {
-                logger.logError('userService - addChannel - err marking chat as read');
                 errback(err);
                 return
             }
-            logger.logInfo('userService - addChannel - added channel to users');
             callback(channel)
         }
     )
@@ -161,3 +158,20 @@ exports.getAuthIds = function (members, callback, errback) {
         "uid": {$in:members}
     })
 };
+
+exports.countUsers = function (members, callback, errback) {
+    pnUserModel.count({
+        "uid": {$in: members}}, function(err, results) {
+            if (err) {
+                errback(err)
+            } else if (results<members.length){
+                console.log(results)
+                var error = new Error('One of the users does not exist in database')
+                errback(error.toString())
+                return;
+            }
+            callback(results)
+
+        }
+    )
+}

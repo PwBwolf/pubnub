@@ -24,11 +24,21 @@ router.post('/create', function (req, res, next) {
     logger.log('info', 'channelRoutes - create - creating a new channel', newChannel)
     async.series([
         function (callback) {
-            channelService.createChannel(newChannel, function (channel) {
-                logger.log('info', 'channelRoutes - create - first service series completed', newChannel)
-                callback(null, channel)
+            userService.countUsers(newChannel.members, function (results) {
+                callback(null, 'All members exist')
+            }, function (err) {
+                logger.logError('One of the users does not exist');
+                res.status(401).send({
+                    error: {status:401},
+                    message: err
+                })
+            })
+        },
+        function (callback) {
+            channelService.createChannel(newChannel, function (results) {
+                callback(null, results)
             }, function(err) {
-                logger.logError('Channel was not created successfully');
+                logger.logError('Error saving the channel');
                 res.status(401).send({
                     error: {status:401},
                     message: err
@@ -36,11 +46,11 @@ router.post('/create', function (req, res, next) {
             });
         },
         function (callback) {
+            logger.logInfo('channelRoutes - create - second service series completed');
             userService.addChannel(newChannel, function (results) {
-                logger.log('info', 'channelRoutes - create - second service series completed', results)
                 callback(null, results)
             }, function(err) {
-                logger.logError('Channel not saved in users properly');
+                // logger.logError('Channel not saved in users properly');
                 res.status(401).send({
                     error: {
                         status:401
@@ -51,7 +61,7 @@ router.post('/create', function (req, res, next) {
         },
         function (callback) {
             pubnubService.grantChannel(newChannel, function (results) {
-                logger.log('info', 'channelRoutes - create - third service series completed', results)
+                logger.logInfo('channelRoutes - create - third service series completed')
                 callback(null, {
                     succes: true,
                     message: 'grants authorized on channel',

@@ -41,15 +41,12 @@ exports.createChannel = function (newChannel, callback, errback) {
     /*
         TODO Implemnet a search functionality for looking up existing channels
     */
-    logger.logInfo('info', 'channelRoutes - createChannel - service making new channel ', newChannel)
     var members = newChannel.members;
     var hist = [];
     var type = 0;
     if(members.length > 2 ) {
         type = 1;
-        console.log('updating as group chat');
     }
-
     for ( var i = 0; i < members.length; i++) {
         hist.push({
             member: members[i],
@@ -62,7 +59,6 @@ exports.createChannel = function (newChannel, callback, errback) {
         history: hist,
         type: type
     };
-    console.log(channel);
     channelModel.create(channel, function (err, user) {
         if (err) {
             errback(err);
