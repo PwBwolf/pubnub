@@ -48,7 +48,7 @@ router.post('/create', function (req, res, next) {
         function (callback) {
             logger.logInfo('channelRoutes - create - second service series completed');
             userService.addChannel(newChannel, function (results) {
-                callback(null, results)
+                callback(null, 'channel added to each member')
             }, function(err) {
                 // logger.logError('Channel not saved in users properly');
                 res.status(401).send({
@@ -62,11 +62,7 @@ router.post('/create', function (req, res, next) {
         function (callback) {
             pubnubService.grantChannel(newChannel, function (results) {
                 logger.logInfo('channelRoutes - create - third service series completed')
-                callback(null, {
-                    succes: true,
-                    message: 'grants authorized on channel',
-                    auth_ids: results
-                })
+                callback(null, results)
             }), function (err) {
                 logger.logError('error with channel being added to pubnub')
                 res.status(401).send({

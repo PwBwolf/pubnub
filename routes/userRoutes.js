@@ -34,6 +34,7 @@ router.get('/userChannels', function (req, res, next) {
 
 router.get('/info', function(req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
+  var uid = decodedToken.uid
   logger.log('info', 'userRoutes - userChannels req user info', uid);
   userService.findUser(decodedToken.uid, function (user) {
     res.status(201).send({

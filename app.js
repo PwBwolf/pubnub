@@ -10,7 +10,7 @@ var jwt = require('jsonwebtoken');
 var config = require('./config/config')
 var pnUser = require('./routes/userRoutes');
 var pnChannel = require('./routes/channelRoutes')
-
+var migration = require('./routes/migrationRoutes')
 /**
  * Create our Express application
  */
@@ -38,6 +38,7 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use('/migration', migration)
 app.use('/user', validateToken, pnUser);
 app.use('/channel', validateToken, pnChannel);
 

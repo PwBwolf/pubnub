@@ -1,5 +1,4 @@
-var mongoose = require('mongoose'),
-    user = require('./userModel');
+var mongoose = require('mongoose');
 
 var channelSchema = new mongoose.Schema({
     name: {type: String, required: true},
@@ -14,7 +13,6 @@ var channelSchema = new mongoose.Schema({
     create_at: {type: Date, default: Date.now}
 });
 
-
-    var channel = mongoose.model('channel', channelSchema, 'channel');
+var channel = mongoose.model('channel', channelSchema, 'channel');
 
 module.exports = channel;

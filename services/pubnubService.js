@@ -22,7 +22,7 @@ exports.grantChannel = function (newChannel, callback, errback) {
         for (i = 0; i < data.length ; i++) {
             auth_ids.push(data[i].auth_key)
         }
-        console.log('here are the auth keys that are being updated', auth_ids)
+
         pubnub.grant({
             channel : newChannel.name,
             auth_key : auth_ids,
@@ -30,9 +30,9 @@ exports.grantChannel = function (newChannel, callback, errback) {
             write : false
         },
             function (status) {
-                console.log(status  )
+                callback(status)
             });
-        callback(auth_ids)
+
     })
 
 };

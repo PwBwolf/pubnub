@@ -34,7 +34,7 @@ exports.getUser = function (uid, callback, errback) {
 
 exports.findUser = function (uid, callback, errback) {
     logger.log('info','userService - findUser - service retrieving', uid)
-    pnUserModel.findOne({uid: uid}, function (err, user) {
+    pnUserModel.find({uid: uid}, function (err, user) {
         if (err) {
             logger.logError('userService - findUser - error retrieving user');
             errback(err);
@@ -127,7 +127,8 @@ exports.addChannel = function (chatChannel, callback, errback) {
 };
 
 exports.channelNotification = function (channel, callback, errback) {
-    logger.log('info','userService - channelNotification - updating members of new message', channel);
+    logger.logInfo('userService - channelNotification - updating members of new message');
+    console.log(channel.members)
     channel = channel.name;
     users = channel.members;
     pnUserModel.update(

@@ -20,10 +20,9 @@ exports.getChannel = function (channelId, callback, errback) {
 };
 
 exports.getChannelMembers = function (channelId, callback, errback) {
-    console.log(channelId);
-    channelModel.find({'name':channelId}, function (err, result) {
+    channelModel.find({name:channelId}, function (err, result) {
         if (err) {
-            console.log("hey theres an error finding that channel")
+            console.log("hey there is an error finding that channel")
             errback(err);
             return
         }
@@ -33,7 +32,7 @@ exports.getChannelMembers = function (channelId, callback, errback) {
             return
 
         }
-        callback(channelDetails);
+        callback(result);
     })
 };
 
