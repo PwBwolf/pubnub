@@ -21,17 +21,14 @@ router.post('/create', function (req, res, next) {
         name: decodedToken.uid + Date.now(),
         members: members
     };
-    logger.log('info', 'channelRoutes - create - creating a new channel', newChannel)
+    logger.log('info', 'channelRoutes - create - creating a new channel', newChannel);
     async.series([
         function (callback) {
             userService.countUsers(newChannel.members, function (results) {
                 callback(null, 'All members exist')
             }, function (err) {
                 logger.logError('One of the users does not exist');
-                res.status(401).send({
-                    error: {status:401},
-                    message: err
-                })
+                callback(err, 'null')
             })
         },
         function (callback) {
@@ -39,10 +36,7 @@ router.post('/create', function (req, res, next) {
                 callback(null, results)
             }, function(err) {
                 logger.logError('Error saving the channel');
-                res.status(401).send({
-                    error: {status:401},
-                    message: err
-                })
+                callback(err, 'null')
             });
         },
         function (callback) {
@@ -50,45 +44,30 @@ router.post('/create', function (req, res, next) {
             userService.addChannel(newChannel, function (results) {
                 callback(null, 'channel added to each member')
             }, function(err) {
-                // logger.logError('Channel not saved in users properly');
-                res.status(401).send({
-                    error: {
-                        status:401
-                    },
-                    message: err
-                })
+                logger.logError('Channel not saved in users properly');
+                callback(err, 'null')
             });
         },
         function (callback) {
             pubnubService.grantChannel(newChannel, function (results) {
                 logger.logInfo('channelRoutes - create - third service series completed')
                 callback(null, results)
-            }), function (err) {
+            }, function (err) {
                 logger.logError('error with channel being added to pubnub')
-                res.status(401).send({
-                    error: {
-                        status:401
-                    },
-                    message: err
-                })
-            }
+                callback(err, 'null')
+            })
         }
     ], function(err, results) {
         if(err) {
             logger.logError('channels was not created')
-            res.status(401).send({
-                error: {
-                    status:401
-                },
-                message: err
-            })
+            callback(err, 'null')
         }
-        logger.log('info', 'channelRoutes - create - created channel successfully', results);
+        logger.logInfo('channelRoutes - create - created channel successfully');
         res.status(201).send({
             success: {
                 status: 201
             },
-            message: results
+            channel: results[1]
         })
     })
 });
@@ -166,12 +145,7 @@ router.put('/addUser', function (req, res, next) {
                 callback(null, results)
             }, function(err) {
                 logger.logError('channelRoutes - addUser - Member not saved is channel properly');
-                res.status(401).send({
-                    error: {
-                        status:401
-                    },
-                    message: err
-                })
+                callback(err, 'null')
             })
         },
         function (callback) {
@@ -181,12 +155,7 @@ router.put('/addUser', function (req, res, next) {
                 callback(null, results)
             }, function(err) {
                 logger.logError('channelRoutes - addUser - Channel not saved in users properly');
-                rres.status(401).send({
-                    error: {
-                        status:401
-                    },
-                    message: err
-                })
+                rcallback(err, 'null')
             });
         }
     ], function(err, results) {

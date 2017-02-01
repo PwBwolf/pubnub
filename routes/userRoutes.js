@@ -86,6 +86,14 @@ router.post('/enroll', function (req, res, next) {
 router.put('/readMessage', function (req, res, next) {
     //when a user read message change history of new message to zero
     var decodedToken = jwtDecode(req.headers.token);
+    if (!req.body.name) {
+        res.status(401).send({
+            error: {
+                status: 401
+            },
+            message: 'channel name bust be specified'
+        });
+    }
     var userViewed= {
         uid :decodedToken.uid,
         name: req.body.name
