@@ -2,6 +2,7 @@
  * Load module dependencies
  */
 var express = require('express');
+var cors = require('cors')
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -11,6 +12,7 @@ var config = require('./config/config')
 var pnUser = require('./routes/userRoutes');
 var pnChannel = require('./routes/channelRoutes')
 var migration = require('./routes/migrationRoutes')
+
 /**
  * Create our Express application
  */
@@ -31,12 +33,7 @@ app.use(cookieParser());
  * Map routes with routers
  *
  */
-
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+app.use(cors());
 
 app.use('/migration', migration)
 app.use('/user', validateToken, pnUser);

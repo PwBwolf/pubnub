@@ -58,6 +58,7 @@ exports.createChannel = function (newChannel, callback, errback) {
         history: hist,
         type: type
     };
+    console.log(channel);
     channelModel.create(channel, function (err, user) {
         if (err) {
             errback(err);
