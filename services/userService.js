@@ -126,15 +126,12 @@ exports.addChannel = function (chatChannel, callback, errback) {
     )
 };
 
-exports.channelNotification = function (channel, callback, errback) {
+exports.channelNotification = function (channelDetails, callback, errback) {
     logger.logInfo('userService - channelNotification - updating members of new message');
-    console.log(channel.members)
-    channel = channel.name;
-    users = channel.members;
     pnUserModel.update(
         {
-            "uid": {$in:users},
-            "channels.name": channel.name
+            "uid": {$in:channelDetails.members},
+            "channels.name": channelDetails.name
         },
         {
             new_messages: 1

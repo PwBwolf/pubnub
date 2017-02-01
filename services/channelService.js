@@ -2,35 +2,26 @@ var channelModel = require('../models/channelModel'),
     logger = require('../logger/logger')
 
 exports.getChannel = function (channelId, callback, errback) {
-    logger.logInfo('')
-    console.log(channelId);
     channelModel.find({'name':channelId}, function (err, channelDetails) {
         if (err) {
             errback(err);
             return
         }
-        if (!channelDetails.length) {
-            console.log("channel does not exist")
-            errback()
-            return
-
-        }
+        console.log(channelDetails.name)
         callback(channelDetails);
     })
 };
 
 exports.getChannelMembers = function (channelId, callback, errback) {
-    channelModel.find({name:channelId}, function (err, result) {
+    channelModel.findOne({name:channelId}, function (err, result) {
         if (err) {
             console.log("hey there is an error finding that channel")
             errback(err);
             return
         }
-        if (!result.length) {
-            console.log("channel does not exist")
+        if (result.name = undefined) {
             errback("channel does not exist")
             return
-
         }
         callback(result);
     })

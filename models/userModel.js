@@ -23,7 +23,8 @@ userSchema.pre('save', function (next) {
     user.find({uid : self.uid}, function (err, user) {
         if(err) {
             next(err);
-        } else if(user) {
+        } else if(user.length > 0) {
+            console.log(user.length)
             var error = new Error("uid exists in database");
             next(error);
         } else {
