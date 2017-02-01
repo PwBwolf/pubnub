@@ -84,15 +84,17 @@ router.post('/enroll', function (req, res, next) {
         }
     ], function(err, results) {
         if(err) {
-            logger.logError('error while creating the user')
-            callback(err, 'null')
+            logger.logError('error while creating the user');
+            res.status(400).send({
+                message: err.toString()
+            })
         }
         logger.logInfo('channelRoutes - create - created channel successfully');
         res.status(201).send({
             success: {
                 status: 201
             },
-            channel: results[0]
+            results: results[0]
         })
     })
 
