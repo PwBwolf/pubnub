@@ -12,6 +12,18 @@ var pubnub = new PubNub({
     }
 });
 
+exports.grantGroup = function (newUser, callback, errback) {
+    pubnub.grant({
+            channelGroups : newUser.channel_groups,
+            auth_key : [newUser.auth_key],
+            read : true,
+            write : true
+        },
+        function (status) {
+            callback(status)
+        });
+};
+
 exports.grantChannel = function (newChannel, callback, errback) {
   //lookup users auth_ key in metadata, return there auth_id
     console.log(newChannel)
@@ -27,7 +39,7 @@ exports.grantChannel = function (newChannel, callback, errback) {
             channel : newChannel.name,
             auth_key : auth_ids,
             read : true,
-            write : false
+            write : true
         },
             function (status) {
                 callback(status)

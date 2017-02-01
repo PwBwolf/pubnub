@@ -1,11 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var userService = require('../services/userService');
-var channelService = require('../services/channelService')
-var jwtDecode = require('jwt-decode');
-var config = require('../config/config');
-var logger = require('../logger/logger');
-
+var express = require('express'),
+    router = express.Router(),
+    userService = require('../services/userService'),
+    channelService = require('../services/channelService'),
+    async = require('async')
+    jwtDecode = require('jwt-decode'),
+    config = require('../config/config'),
+    logger = require('../logger/logger'),
+    pubnubService = require('../services/pubnubService');
 
 /* GET users listing. /user */
 router.get('/userChannels', function (req, res, next) {
@@ -63,24 +64,38 @@ router.post('/enroll', function (req, res, next) {
       channel_groups: [decodedToken.uid],
       auth_key: authKey
   };
-  logger.log('info', 'userRoutes - enroll - enrolling new user', newUser);
-  userService.create(newUser, function (user) {
-      logger.logInfo('userRoutes - enroll - user created successfully')
-      res.status(201).send({
-          success: {
-              status:201
-          },
-          message: 'record saved in metadata'
-      });
-  }, function(err) {
-      logger.log('error','userRoutes - enroll - error creating user', err);
-      res.status(400).send({
-          error: {
-              status: 400
-          },
-          message: err.toString()
-    });
-  });
+    async.series([
+        function (callback) {
+            userService.create(newUser, function (user) {
+                logger.logInfo('userRoutes - enroll - user created successfully')
+                callback(null, {user: user})
+            }, function(err) {
+                logger.log('error','userRoutes - enroll - error creating user', err);
+                callback(err, 'there was an error creating user')
+            });
+        },
+        function (callback) {
+            pubnubService.grantGroup(newUser, function (results) {
+                callback(null, {pubnubResults: results})
+            }, function (err) {
+                logger.log('error','userRoutes - enroll - pubnub error when creating user', err);
+                callback(err, 'there was an error creating user')
+            })
+        }
+    ], function(err, results) {
+        if(err) {
+            logger.logError('error while creating the user')
+            callback(err, 'null')
+        }
+        logger.logInfo('channelRoutes - create - created channel successfully');
+        res.status(201).send({
+            success: {
+                status: 201
+            },
+            channel: results[0]
+        })
+    })
+
 });
 
 router.put('/readMessage', function (req, res, next) {
