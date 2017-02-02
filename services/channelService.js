@@ -7,7 +7,6 @@ exports.getChannel = function (channelId, callback, errback) {
             errback(err);
             return
         }
-        console.log(channelDetails.name)
         callback(channelDetails);
     })
 };
@@ -15,7 +14,6 @@ exports.getChannel = function (channelId, callback, errback) {
 exports.getChannelMembers = function (channelId, callback, errback) {
     channelModel.findOne({name:channelId}, function (err, result) {
         if (err) {
-            console.log("hey there is an error finding that channel")
             errback(err);
             return
         }
@@ -23,7 +21,6 @@ exports.getChannelMembers = function (channelId, callback, errback) {
             errback("channel does not exist")
             return
         }
-        console.log(result)
         callback(result);
     })
 };
