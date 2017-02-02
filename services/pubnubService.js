@@ -12,6 +12,28 @@ var pubnub = new PubNub({
     }
 });
 
+exports.addChannelToGroup = function (newChannel, callback, errback) {
+    var collectiveStatus = [];
+    for(i = 0; i < newChannel.members.length; i++) {
+        pubnub.channelGroups.addChannels(
+            {
+                channels: [newChannel.name],
+                channelGroup: newChannel.members[i]
+            },
+            function(status) {
+                if (status.error) {
+                    console.log("PUBNUB error")
+                    errback(status.error);
+                } else {
+                    console.log("operation done!")
+                    collectiveStatus.push(status)
+                }
+            }
+        );
+    }
+    callback(collectiveStatus)
+};
+
 exports.grantGroup = function (newUser, callback, errback) {
     pubnub.grant({
             channelGroups : newUser.channel_groups,

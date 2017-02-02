@@ -40,13 +40,22 @@ router.post('/create', function (req, res, next) {
             });
         },
         function (callback) {
-            logger.logInfo('channelRoutes - create - second service series completed');
+            logger.logInfo('channelRoutes - create - adding channel to user(s) records');
             userService.addChannel(newChannel, function (results) {
                 callback(null, 'channel added to each member')
             }, function(err) {
                 logger.logError('Channel not saved in users properly');
                 callback(err, 'null')
             });
+        },
+        function (callback) {
+            logger.logInfo('channelRoutes - create - requesting channels additions to pubnub');
+            pubnubService.addChannelToGroup(newChannel, function (results) {
+                callback(null, 'channel added to each member on pubnub')
+            }, function (err) {
+                logger.logError('Channel not saved in users properly');
+                callback(err, 'null')
+            })
         },
         function (callback) {
             pubnubService.grantChannel(newChannel, function (results) {
