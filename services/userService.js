@@ -134,7 +134,9 @@ exports.channelNotification = function (channelDetails, callback, errback) {
             "channels.name": channelDetails.name
         },
         {
-            new_messages: 1
+            '$set': {
+                'channels.$.new_messages': 1
+            }
         },
         {
             multi: true
@@ -151,9 +153,16 @@ exports.channelNotification = function (channelDetails, callback, errback) {
     )
 }
 
-exports.getAuthIds = function (members, callback, errback) {
-    pnUserModel.find({
-        "uid": {$in:members}
+exports.removeChannel = function (channel, callback, errback) {
+    pnUserModel.remove({
+        "uid": {$in:channel.members},
+        "channels.name" : channel.name
+    }, function (err, result) {
+        if (err) {
+            errback(err);
+            return
+        }
+        callback(result)
     })
 };
 

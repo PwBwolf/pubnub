@@ -23,6 +23,7 @@ exports.getChannelMembers = function (channelId, callback, errback) {
             errback("channel does not exist")
             return
         }
+        console.log(result)
         callback(result);
     })
 };
@@ -58,6 +59,17 @@ exports.createChannel = function (newChannel, callback, errback) {
         callback(user)
     })
 };
+
+exports.deleteChannel = function (channel, callback, errback) {
+    channelModel.remove({name: channel.name}, function (err, results) {
+        if(err) {
+            errback(err);
+            return
+        }
+        callback(results)
+    })
+};
+
 
 
 

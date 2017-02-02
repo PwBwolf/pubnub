@@ -83,8 +83,12 @@ router.post('/create', function (req, res, next) {
 
 router.put('/newMessage', function (req, res, next) {
     channelService.getChannelMembers(req.body.name, function (channel) {
+        channelUpdate = {
+            name:req.body.name,
+            members: channel.members
+        }
         logger.logInfo('channelRoutes - newMessage - retrieved all of the members from the chat');
-        userService.channelNotification(channel, function (status) {
+        userService.channelNotification(channelUpdate, function (status) {
             logger.logInfo('channelRoutes - newMessage - successfully notified users of new message');
             res.status(201).send({
                 success: {
