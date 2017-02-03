@@ -13,7 +13,8 @@ var pubnub = new PubNub({
 });
 
 exports.addChannelToGroup = function (newChannel, callback, errback) {
-    var collectiveStatus = [];
+    self = this;
+    var pubnubResults = [];
     for(i = 0; i < newChannel.members.length; i++) {
         pubnub.channelGroups.addChannels(
             {
@@ -25,13 +26,12 @@ exports.addChannelToGroup = function (newChannel, callback, errback) {
                     console.log("PUBNUB error")
                     errback(status.error);
                 } else {
-                    console.log("operation done!")
-                    collectiveStatus.push(status)
+                    pubnubResults.push(status)
                 }
             }
         );
     }
-    callback(collectiveStatus)
+    callback(pubnubResults)
 };
 
 exports.grantGroup = function (newUser, callback, errback) {

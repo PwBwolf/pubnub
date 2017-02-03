@@ -174,7 +174,7 @@ exports.countUsers = function (members, callback, errback) {
         "uid": {$in: members}}, function(err, results) {
             if (err) {
                 errback(err)
-            } else if (results<members.length){
+            } else if (results < members.length){
                 console.log(results)
                 var error = new Error('One of the users does not exist in database')
                 errback(error.toString())

@@ -69,7 +69,6 @@ app.use(function(err, req, res, next) {
 
 function validateToken(req, res, next) {
     var token = req.headers.token;
-    console.log(token)
     if (token) {
         // verifies secret and checks exp
         jwt.verify(token, config.jwtSecret, function(err, decoded) {
