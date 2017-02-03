@@ -25,7 +25,7 @@ router.post('/create', function (req, res, next) {
         name: decodedToken.uid + Date.now(),
         members: members
     };
-    logger.log('info', 'channelRoutes - create - creating a new channel', newChannel);
+    logger.logInfo('info', 'channelRoutes - create - creating a new channel', newChannel);
     async.series([
         function (callback) {
             userService.countUsers(newChannel.members, function (results) {
@@ -128,7 +128,7 @@ router.put('/newMessage', function (req, res, next) {
 
 router.post('/unsubscribe', function (req, res, next) {
     //to be done
-    logger.log('info', 'channelRoutes - unsubscribe - retrieved all of the members from the chat', req.body.member);
+    logger.logInfo('info', 'channelRoutes - unsubscribe - retrieved all of the members from the chat', req.body.member);
     channelService.leaveChannel(req.body.member, function (status) {
         logger.logInfo('channelRoutes - unsubscribe - unsubscribed user');
         res.status(201)
@@ -159,7 +159,7 @@ router.put('/addUser', function (req, res, next) {
         })
     }
     var addUser = req.body
-    logger.log('info', 'channelRoutes - addUser - add user to an existing channel', addUser);
+    logger.logInfo('info', 'channelRoutes - addUser - add user to an existing channel', addUser);
     async.series([
         function (callback) {
             logger.logInfo('channelRoutes - addUser - making a new channel');
@@ -196,7 +196,7 @@ router.put('/addUser', function (req, res, next) {
 
 
 router.put('/displayName', function (req, res, next) {
-    logger.log('info','channelRoutes - displayName - successfully added a user', req.body);
+    logger.logInfo('info','channelRoutes - displayName - successfully added a user', req.body);
     if (!req.body.displayName && !req.body.name) {
         logger.logError('Channel name and displayName required');
         res.status(400).send({

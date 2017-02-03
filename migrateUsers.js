@@ -120,7 +120,7 @@ var req = https.get(options, function(res) {
 	                logger.logInfo('userRoutes - enroll - user created successfully')
 	                callback(null, {user: user})
 	            }, function(err) {
-	                logger.log('error','userRoutes - enroll - error creating user', err);
+	                logger.logInfo('error','userRoutes - enroll - error creating user', err);
 	                callback(err, 'there was an error creating user')
 	            });
 	        },
@@ -128,7 +128,7 @@ var req = https.get(options, function(res) {
 	            pubnubService.grantGroup(newUser, function (results) {
 	                callback(null, {pubnubResults: results})
 	            }, function (err) {
-	                logger.log('error','userRoutes - enroll - pubnub error when creating user', err);
+	                logger.logInfo('error','userRoutes - enroll - pubnub error when creating user', err);
 	                callback(err, 'there was an error creating user')
 	            })
 	        }

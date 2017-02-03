@@ -2,7 +2,7 @@ var pnUserModel = require('../models/userModel'),
     logger = require('../logger/logger');
 
 exports.create = function (user, callback, errback) {
-    logger.log('info','userService - create - service running make record for this user', user)
+    logger.logInfo('info','userService - create - service running make record for this user', user)
     pnUserModel.create(user, function (err, user) {
         if (err) {
             console.log(err);
@@ -15,7 +15,7 @@ exports.create = function (user, callback, errback) {
 };
 
 exports.getUser = function (uid, callback, errback) {
-    logger.log('info','userService - getUser - service returning user info with channels', uid)
+    logger.logInfo('info','userService - getUser - service returning user info with channels', uid)
     pnUserModel.find({uid: uid}).populate('channelInfo').exec(function(err, res) {
         if (err) {
             logger.logError('userService - getUser - service had a problem saving user data');
@@ -33,7 +33,7 @@ exports.getUser = function (uid, callback, errback) {
 }
 
 exports.findUser = function (uid, callback, errback) {
-    logger.log('info','userService - findUser - service retrieving', uid)
+    logger.logInfo('info','userService - findUser - service retrieving', uid)
     pnUserModel.find({uid: uid}, function (err, user) {
         if (err) {
             logger.logError('userService - findUser - error retrieving user');
@@ -51,7 +51,7 @@ exports.findUser = function (uid, callback, errback) {
 };
 
 exports.messageRead = function (channel, callback, errback) {
-    logger.log('info','userService - messageRead - service marking channel read', channel);
+    logger.logInfo('info','userService - messageRead - service marking channel read', channel);
     pnUserModel.update(
         {
             'uid': channel.uid,
@@ -73,7 +73,7 @@ exports.messageRead = function (channel, callback, errback) {
 }
 
 exports.inactiveChat = function (chatChannel, callback, errback) {
-    logger.log('info','userService - inactiveChat - service marking channel read', chatChannel);
+    logger.logInfo('info','userService - inactiveChat - service marking channel read', chatChannel);
     pnUserModel.update(
         {
             'uid': chatChannel.uid,
