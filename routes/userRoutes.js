@@ -127,7 +127,7 @@ router.put('/readMessage', function (req, res, next) {
         logger.log('error','userRoutes - readMessage - error updating message as read', err);
         res.status(401).send({
             error: {
-                status: 400
+                status: 401
             },
             message: err
         });

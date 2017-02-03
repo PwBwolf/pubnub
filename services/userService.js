@@ -67,10 +67,6 @@ exports.messageRead = function (channel, callback, errback) {
                 errback(err);
                 return
             }
-            if (channel.nModified < 1) {
-                errback('channel does not exist');
-                return
-            }
             callback(channel)
         }
     )
