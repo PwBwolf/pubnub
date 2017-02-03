@@ -8,12 +8,16 @@ var express = require('express'),
     logger = require('../logger/logger')
 
 
-router.get('/:id', function (req, res, next) {
-///to be done
-});
-
-
 router.post('/create', function (req, res, next) {
+    if (!req.body.members) {
+        res.status(400).send({
+            error: {
+                status:400
+            },
+            message: 'bad request, route requires members'
+        })
+        return
+    }
     var decodedToken = jwtDecode(req.headers.token);
     var members = req.body.members;
     members.push(decodedToken.uid);
@@ -51,6 +55,7 @@ router.post('/create', function (req, res, next) {
         function (callback) {
             logger.logInfo('channelRoutes - create - requesting channels additions to pubnub');
             pubnubService.addChannelToGroup(newChannel, function (results) {
+
                 callback(null, results)
             }, function (err) {
                 logger.logError('Channel not saved in users properly');
@@ -69,14 +74,21 @@ router.post('/create', function (req, res, next) {
     ], function(err, results) {
         if(err) {
             logger.logError('channels was not created')
-            callback(err, 'null')
+            res.status(401).send({
+                error: {
+                    status:401
+                },
+                message: err
+                }
+            )
+            return
         }
         logger.logInfo('channelRoutes - create - created channel successfully');
         res.status(201).send({
             success: {
                 status: 201
             },
-            channel: results[1]
+            channel: results
         })
     })
 });
