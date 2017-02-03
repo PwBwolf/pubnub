@@ -51,7 +51,7 @@ router.post('/create', function (req, res, next) {
         function (callback) {
             logger.logInfo('channelRoutes - create - requesting channels additions to pubnub');
             pubnubService.addChannelToGroup(newChannel, function (results) {
-                callback(null, 'channel added to each member on pubnub')
+                callback(null, results)
             }, function (err) {
                 logger.logError('Channel not saved in users properly');
                 callback(err, 'null')
