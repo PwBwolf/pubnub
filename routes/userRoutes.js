@@ -150,7 +150,7 @@ router.put('/closedWindow', function (req,res,next) {
         uid: decodedToken.uid,
         name: req.body.name
     };
-    logger.logInfo('info', 'userRoutes - closedWindow - updating these chats as inactive', inactiveChats);
+    logger.logInfo('info - userRoutes - closedWindow - updating these chats as inactive', inactiveChats);
     userService.inactiveChat(inactiveChats, function (status) {
 
         res.status(200).send({
@@ -160,7 +160,7 @@ router.put('/closedWindow', function (req,res,next) {
             message: 'channel is marked as inactive'
         })
     }, function (err) {
-        logger.logError('error','userRoutes - closedWindow - error updating the windows as closed', err);
+        logger.logError('error - userRoutes - closedWindow - error updating the windows as closed', err);
         res.status(401).send({
             error: {
                 status: 401
