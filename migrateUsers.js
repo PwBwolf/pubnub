@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var async = require('async');
 var logger = require('./logger/logger');
 var userService = require('./services/userService');
-var pubnubService = require('.services/pubnubService');
+var pubnubService = require('./services/pubnubService');
 var pnUserModel = require('./models/userModel');
 
 require('./db/connect');
@@ -21,7 +21,7 @@ var userCreatingSucceed = 0;
 var userExisted = 0;
 
 var options = {
-		  host: 'devapp1.glx.com',
+		  host: config.database[config.environment].rorUrl,
 		  path: '/social/api/chat/users/all',
 		  port : 443
 		};
@@ -40,9 +40,9 @@ var req = https.get(options, function(res) {
 	    console.log('BODY: ' + body);
 	    // ...and/or process the entire body here.
 	    var jsonObject = JSON.parse(body);
-	    console.log(jsonObject);
 	    var userIds = jsonObject.data.user_ids;
 	    console.log('total users: ', userIds.length);
+	    userTotal = userIds.length;
 	    doMigration(userIds);
 	  })
 	});
@@ -53,7 +53,7 @@ var req = https.get(options, function(res) {
 
 	function doMigration(userIds) {
 		console.log('migration...');
-		Async.each(
+		async.each(
 			userIds,
 			function(userId, callback) {
 				pnUserModel.find({uid: userId}, function (err, user) {
@@ -62,7 +62,7 @@ var req = https.get(options, function(res) {
 			            userFoundFailed++;
 			            callback(null, 'find error');
 			        } else {
-				        if (!user) {
+				        if (user.length == 0) {
 				        	userCreating++;
 				            logger.logInfo('chat user not exist, create a new one!');
 				            createChatUser(userId, function(err, results) {
@@ -76,6 +76,9 @@ var req = https.get(options, function(res) {
 				            		callback(null, 'create success');
 				            	}
 							});
+
+				            // for testing without running creating
+				            //callback(null, 'creating...');
 				        } else {
 				        	userExisted++;
 				        	logger.logInfo('chat user exist');
@@ -95,9 +98,10 @@ var req = https.get(options, function(res) {
 				console.log('user total: ', userTotal);
 				console.log('userFoundFailed: ', userFoundFailed);
 				console.log('userCreating: ', userCreating);
-				console.log('user total: ', userCreatingFailed);
-				console.log('userCreatingFailed: ', userCreatingSucceed);
+				console.log('userCreatingFailed: ', userCreatingFailed);
+				console.log('userCreatingSucceed: ', userCreatingSucceed);
 				console.log('userExisted: ', userExisted);
+				process.exit(0);
 			}
 		)
 	}
