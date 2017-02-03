@@ -95,7 +95,7 @@ router.post('/create', function (req, res, next) {
 
 router.put('/newMessage', function (req, res, next) {
     channelService.getChannelMembers(req.body.name, function (channel) {
-        channelUpdate = {
+        var channelUpdate = {
             name:req.body.name,
             members: channel.members
         };
