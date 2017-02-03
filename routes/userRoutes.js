@@ -101,9 +101,9 @@ router.post('/enroll', function (req, res, next) {
 });
 
 router.put('/readMessage', function (req, res, next) {
-    //when a user read message change history of new message to zero
     var decodedToken = jwtDecode(req.headers.token);
     if (!req.body.name) {
+        logger.log('error','userRoutes - readMessage - missing fields in req body', err);
         res.status(401).send({
             error: {
                 status: 401
@@ -115,9 +115,8 @@ router.put('/readMessage', function (req, res, next) {
         uid :decodedToken.uid,
         name: req.body.name
     };
-    logger.log('info', 'userRoutes - readMessage - user read a message', userViewed);
     userService.messageRead(userViewed, function (status) {
-        logger.logInfo('userRoutes - readMessage - message updated as read')
+        logger.logInfo('userRoutes - readMessage - message updated as read');
         res.status(201).send({
             success: {
                 status:201
@@ -137,8 +136,8 @@ router.put('/readMessage', function (req, res, next) {
 
 //will accept an array of channels that will mark
 router.put('/closedWindow', function (req,res,next) {
-    if (!req.body.names || req.body.names.length < 1) {
-        logger.log('error','userRoutes - closedWindow - no channels are set in the req body', err);
+    if (!req.body.name) {
+        logger.logError('userRoutes - closedWindow - no channels are set in the req body');
         res.status(400).send({
             error: {
                 status: 400
@@ -146,17 +145,17 @@ router.put('/closedWindow', function (req,res,next) {
             message: 'Specify at least one channel that user is no longer active in'
         })
     }
-    var tokenPay = jwtDecode(req.headers.token);
+    var decodedToken = jwtDecode(req.headers.token);
     var inactiveChats = {
-        uid: tokenPay.uid,
-        names: req.body.names
+        uid: decodedToken.uid,
+        name: req.body.name
     };
     logger.log('info', 'userRoutes - closedWindow - updating these chats as inactive', inactiveChats);
     userService.inactiveChat(inactiveChats, function (status) {
-        logger.log('info', 'userRoutes - closedWindow - channe  ls marked as read', status);
+
         res.status(200).send({
             success: {
-                status:200
+                status: status
             },
             message: 'channel is marked as inactive'
         })

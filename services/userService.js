@@ -65,20 +65,23 @@ exports.messageRead = function (channel, callback, errback) {
             if (err) {
                 logger.logError('userService - messageRead - err marking chat as read');
                 errback(err);
-                return;
+                return
             }
-            logger.logInfo('userService - messageRead - marked chat as read');
+            if (channel.nModified < 1) {
+                errback('channel does not exist');
+                return
+            }
             callback(channel)
         }
     )
 }
 
 exports.inactiveChat = function (chatChannel, callback, errback) {
-    logger.log('info','userService - inactiveChat - service marking channel read', channel);
+    logger.log('info','userService - inactiveChat - service marking channel read', chatChannel);
     pnUserModel.update(
         {
             'uid': chatChannel.uid,
-            'channels.name': { $in: chatChannel.names}
+            'channels.name': chatChannel.name
         },
         {
             '$set': {
@@ -93,9 +96,9 @@ exports.inactiveChat = function (chatChannel, callback, errback) {
                 errback(err);
                 return;
             }
-            logger.logInfo('userService - inactiveChat - updated as inactive')
             callback(channel)
-        })
+        }
+    )
 };
 
 exports.addChannel = function (chatChannel, callback, errback) {

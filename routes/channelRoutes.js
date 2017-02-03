@@ -86,7 +86,7 @@ router.put('/newMessage', function (req, res, next) {
         channelUpdate = {
             name:req.body.name,
             members: channel.members
-        }
+        };
         userService.channelNotification(channelUpdate, function (status) {
             res.status(201).send({
                 success: {
