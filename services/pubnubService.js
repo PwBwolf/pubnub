@@ -8,7 +8,8 @@ var pubnub = new PubNub({
     subscribeKey : config.pubnub.subscribeKey,
     secretKey  : config.pubnub.secretKey,
     error: function (error) {
-        console.log('Error:', error);
+        //console.log('Error:', error);
+        logger.logError(error);
     }
 });
 
@@ -23,7 +24,8 @@ exports.addChannelToGroup = function (newChannel, callback, errback) {
             },
             function(status) {
                 if (status.error) {
-                    console.log("PUBNUB error")
+                    logger.logError("PUBNUB error");
+                    logger.logError(status.error);
                     errback(status.error);
                 } else {
                     pubnubResults.push(status)
@@ -39,7 +41,8 @@ exports.grantGroup = function (newUser, callback, errback) {
             channelGroups : newUser.channel_groups,
             auth_key : [newUser.auth_key],
             read : true,
-            write : true
+            write : true,
+            ttl: 0
         },
         function (status) {
             callback(status)
@@ -48,7 +51,7 @@ exports.grantGroup = function (newUser, callback, errback) {
 
 exports.grantChannel = function (newChannel, callback, errback) {
   //lookup users auth_ key in metadata, return there auth_id
-    console.log(newChannel)
+    logger.logInfo(newChannel)
     var auth_ids = [];
     userModel.find({
         uid: {$in: newChannel.members}

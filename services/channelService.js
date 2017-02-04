@@ -47,7 +47,7 @@ exports.createChannel = function (newChannel, callback, errback) {
         history: hist,
         type: type
     };
-    console.log(channel);
+    logger.logInfo(channel);
     channelModel.create(channel, function (err, user) {
         if (err) {
             errback(err);
@@ -99,7 +99,8 @@ exports.addMembers = function (channel, callback, errback) {
     }, function (err, result) {
         if (err) {
             errback(err)
-            console.log('addMember service did not updated users successfully')
+            logger.logError('addMember service did not updated users successfully')
+            logger.logError(err);
             return
         }
         callback(result)

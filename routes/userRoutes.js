@@ -12,7 +12,7 @@ var express = require('express'),
 router.get('/userChannels', function (req, res, next) {
     var decodedToken = jwtDecode(req.headers.token);
     var uid = decodedToken.uid;
-    logger.logInfo('info', 'userRoutes - userChannels req user info with channels', uid);
+    logger.logInfo('userRoutes - userChannels req user info with channels');
     userService.getUser(uid, function(user) {
         logger.logInfo('User info successfully retrieved');
         res.status(201).send({
@@ -36,7 +36,7 @@ router.get('/userChannels', function (req, res, next) {
 router.get('/info', function(req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
   var uid = decodedToken.uid
-  logger.logInfo('info', 'userRoutes - userChannels req user info', uid);
+  logger.logInfo('userRoutes - userChannels req user info');
   userService.findUser(decodedToken.uid, function (user) {
     res.status(201).send({
         success: {
@@ -46,7 +46,8 @@ router.get('/info', function(req, res, next) {
         message: 'User found'
     });
   }, function(err) {
-      logger.logError('error','userRoutes - userChannels - error retrieving data from database', err);
+      logger.logError('userRoutes - userChannels - error retrieving data from database');
+      logger.logError(err);
       res.status(400).send({
           error: {
               status: 400
@@ -70,7 +71,8 @@ router.post('/enroll', function (req, res, next) {
                 logger.logInfo('userRoutes - enroll - user created successfully')
                 callback(null, {user: user})
             }, function(err) {
-                logger.logError('error','userRoutes - enroll - error creating user', err);
+                logger.logError('userRoutes - enroll - error creating user');
+                logger.logError(err);
                 callback(err, 'there was an error creating user')
             });
         },
@@ -78,13 +80,15 @@ router.post('/enroll', function (req, res, next) {
             pubnubService.grantGroup(newUser, function (results) {
                 callback(null, {pubnubResults: results})
             }, function (err) {
-                logger.logError('error','userRoutes - enroll - pubnub error when creating user', err);
+                logger.logError('userRoutes - enroll - pubnub error when creating user');
+                logger.logError(err);
                 callback(err, 'there was an error creating user')
             })
         }
     ], function(err, results) {
         if(err) {
             logger.logError('error while creating the user');
+            logger.logError(err);
             res.status(400).send({
                 message: err.toString()
             })
@@ -103,7 +107,8 @@ router.post('/enroll', function (req, res, next) {
 router.put('/readMessage', function (req, res, next) {
     var decodedToken = jwtDecode(req.headers.token);
     if (!req.body.name) {
-        logger.logError('error','userRoutes - readMessage - missing fields in req body', err);
+        logger.logError('userRoutes - readMessage - missing fields in req body');
+        logger.logError(err);
         res.status(401).send({
             error: {
                 status: 401
@@ -124,7 +129,8 @@ router.put('/readMessage', function (req, res, next) {
             message: 'message updated as read'
         });
     }, function (err) {
-        logger.logError('error','userRoutes - readMessage - error updating message as read', err);
+        logger.logError('userRoutes - readMessage - error updating message as read');
+        logger.logError(err);
         res.status(401).send({
             error: {
                 status: 401
@@ -150,7 +156,7 @@ router.put('/closedWindow', function (req,res,next) {
         uid: decodedToken.uid,
         name: req.body.name
     };
-    logger.logInfo('info - userRoutes - closedWindow - updating these chats as inactive', inactiveChats);
+    logger.logInfo('userRoutes - closedWindow - updating these chats as inactive');
     userService.inactiveChat(inactiveChats, function (status) {
 
         res.status(200).send({
@@ -160,7 +166,8 @@ router.put('/closedWindow', function (req,res,next) {
             message: 'channel is marked as inactive'
         })
     }, function (err) {
-        logger.logError('error - userRoutes - closedWindow - error updating the windows as closed', err);
+        logger.logError('userRoutes - closedWindow - error updating the windows as closed');
+        logger.logError(err);
         res.status(401).send({
             error: {
                 status: 401

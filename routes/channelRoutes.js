@@ -25,13 +25,14 @@ router.post('/create', function (req, res, next) {
         name: decodedToken.uid + Date.now(),
         members: members
     };
-    logger.logInfo('info', 'channelRoutes - create - creating a new channel', newChannel);
+    logger.logInfo('channelRoutes - create - creating a new channel');
     async.series([
         function (callback) {
             userService.countUsers(newChannel.members, function (results) {
                 callback(null, 'All members exist')
             }, function (err) {
                 logger.logError('One of the users does not exist');
+                logger.logError(err);
                 callback(err, 'null')
             })
         },
@@ -40,6 +41,7 @@ router.post('/create', function (req, res, next) {
                 callback(null, results)
             }, function(err) {
                 logger.logError('Error saving the channel');
+                logger.logError(err);
                 callback(err, 'null')
             });
         },
@@ -59,6 +61,7 @@ router.post('/create', function (req, res, next) {
                 callback(null, results)
             }, function (err) {
                 logger.logError('Channel not saved in users properly');
+                logger.logError(err);
                 callback(err, 'null')
             })
         },
@@ -68,12 +71,14 @@ router.post('/create', function (req, res, next) {
                 callback(null, results)
             }, function (err) {
                 logger.logError('error with channel being added to pubnub')
+                logger.logError(err);
                 callback(err, 'null')
             })
         }
     ], function(err, results) {
         if(err) {
-            logger.logError('channels was not created')
+            logger.logError('channels was not created');
+            logger.logError(err);
             res.status(401).send({
                 error: {
                     status:401
@@ -95,6 +100,8 @@ router.post('/create', function (req, res, next) {
 
 router.put('/newMessage', function (req, res, next) {
     channelService.getChannelMembers(req.body.name, function (channel) {
+    	logger.logInfo('get channel members');
+    	logger.logInfo(channel.members);
         var channelUpdate = {
             name:req.body.name,
             members: channel.members
@@ -107,7 +114,8 @@ router.put('/newMessage', function (req, res, next) {
                 message: 'new message switch updated'
             })
         }, function (err) {
-            logger.logError('channelRoutes - newMessage - failed to update users with new message')
+            logger.logError('channelRoutes - newMessage - failed to update users with new message');
+            logger.logError(err);
             res.status(401).send({
                 error: {
                     status:401
@@ -117,6 +125,7 @@ router.put('/newMessage', function (req, res, next) {
         })
     }, function (err) {
         logger.logError('channelRoutes - newMessage - failed to find that record');
+        logger.logError(err);
         res.status(404).send({
             error: {
                 status:404
@@ -128,7 +137,7 @@ router.put('/newMessage', function (req, res, next) {
 
 router.post('/unsubscribe', function (req, res, next) {
     //to be done
-    logger.logInfo('info', 'channelRoutes - unsubscribe - retrieved all of the members from the chat', req.body.member);
+    logger.logInfo('channelRoutes - unsubscribe - retrieved all of the members from the chat');
     channelService.leaveChannel(req.body.member, function (status) {
         logger.logInfo('channelRoutes - unsubscribe - unsubscribed user');
         res.status(201)
@@ -140,6 +149,7 @@ router.post('/unsubscribe', function (req, res, next) {
             })
     }, function (err    ) {
         logger.logError('channelRoutes - unsubscribe - there was an error on unsubscribing the user')
+        logger.logError(err);
         res.status(401).send({
             error: {
                 status:401
@@ -159,15 +169,17 @@ router.put('/addUser', function (req, res, next) {
         })
     }
     var addUser = req.body
-    logger.logInfo('info', 'channelRoutes - addUser - add user to an existing channel', addUser);
+    logger.logInfo('channelRoutes - addUser - add user to an existing channel');
     async.series([
         function (callback) {
             logger.logInfo('channelRoutes - addUser - making a new channel');
             channelService.addMembers(req.body, function (results) {
                 logger.logError('channelRoutes - addUser - addMebers successfully added members');
+                logger.logError(err);
                 callback(null, results)
             }, function(err) {
                 logger.logError('channelRoutes - addUser - Member not saved is channel properly');
+                logger.logError(err);
                 callback(err, 'null')
             })
         },
@@ -178,12 +190,14 @@ router.put('/addUser', function (req, res, next) {
                 callback(null, results)
             }, function(err) {
                 logger.logError('channelRoutes - addUser - Channel not saved in users properly');
+                logger.logError(err);
                 rcallback(err, 'null')
             });
         }
     ], function(err, results) {
         if(err) {
             logger.logError( 'Members successfully added to the chat');
+            logger.logError(err);
             res.status(401).send({
                 error: {status:401},
                 message: err
@@ -196,9 +210,10 @@ router.put('/addUser', function (req, res, next) {
 
 
 router.put('/displayName', function (req, res, next) {
-    logger.logInfo('info','channelRoutes - displayName - successfully added a user', req.body);
+    logger.logInfo('channelRoutes - displayName - successfully added a user');
     if (!req.body.displayName && !req.body.name) {
         logger.logError('Channel name and displayName required');
+        logger.logError(err);
         res.status(400).send({
             error: {
                 status:400
@@ -216,6 +231,7 @@ router.put('/displayName', function (req, res, next) {
         })
     }, function (err) {
             logger.logError('channelRoutes - displayName - displayname not updated');
+            logger.logError(err);
             res.status(401).send({
                 error: {
                     status:401

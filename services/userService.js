@@ -2,10 +2,11 @@ var pnUserModel = require('../models/userModel'),
     logger = require('../logger/logger');
 
 exports.create = function (user, callback, errback) {
-    logger.logInfo('info','userService - create - service running make record for this user', user)
+    logger.logInfo('userService - create - service running make record for this user')
     pnUserModel.create(user, function (err, user) {
         if (err) {
-            console.log(err);
+        	logger.logError('userService - create - failed to create user');
+            logger.logError(err);
             errback(err);
             return
         }
@@ -15,15 +16,17 @@ exports.create = function (user, callback, errback) {
 };
 
 exports.getUser = function (uid, callback, errback) {
-    logger.logInfo('info','userService - getUser - service returning user info with channels', uid)
-    pnUserModel.find({uid: uid}).populate('channelInfo').exec(function(err, res) {
+    logger.logInfo('userService - getUser - service returning user info with channels');
+    pnUserModel.findOne({uid: uid}).populate('channelInfo').exec(function(err, res) {
         if (err) {
             logger.logError('userService - getUser - service had a problem saving user data');
+            logger.logError(err);
             errback(err);
             return
         }
         if (!res) {
             logger.logError('userService - getUser - no chat record found for this user');
+            logger.logError(err);
             errback(err);
             return
         }
@@ -33,15 +36,17 @@ exports.getUser = function (uid, callback, errback) {
 }
 
 exports.findUser = function (uid, callback, errback) {
-    logger.logInfo('info','userService - findUser - service retrieving', uid)
+    logger.logInfo('userService - findUser - service retrieving')
     pnUserModel.find({uid: uid}, function (err, user) {
         if (err) {
             logger.logError('userService - findUser - error retrieving user');
+            logger.logError(err);
             errback(err);
             return
         }
         if (!user) {
             logger.logError('userService - findUser - no chat record found for this user');
+            logger.logError(err);
             errback(err);
             return
         }
@@ -51,7 +56,7 @@ exports.findUser = function (uid, callback, errback) {
 };
 
 exports.messageRead = function (channel, callback, errback) {
-    logger.logInfo('info','userService - messageRead - service marking channel read', channel);
+    logger.logInfo('userService - messageRead - service marking channel read');
     pnUserModel.update(
         {
             'uid': channel.uid,
@@ -64,6 +69,7 @@ exports.messageRead = function (channel, callback, errback) {
         function (err, channel) {
             if (err) {
                 logger.logError('userService - messageRead - err marking chat as read');
+                logger.logError(err);
                 errback(err);
                 return
             }
@@ -73,7 +79,7 @@ exports.messageRead = function (channel, callback, errback) {
 }
 
 exports.inactiveChat = function (chatChannel, callback, errback) {
-    logger.logInfo('info','userService - inactiveChat - service marking channel read', chatChannel);
+    logger.logInfo('userService - inactiveChat - service marking channel read');
     pnUserModel.update(
         {
             'uid': chatChannel.uid,
@@ -89,6 +95,7 @@ exports.inactiveChat = function (chatChannel, callback, errback) {
         function (err, channel) {
             if (err) {
                 logger.logError('userService - inactiveChat - err marking chat as read');
+                logger.logError(err);
                 errback(err);
                 return;
             }
@@ -143,6 +150,7 @@ exports.channelNotification = function (channelDetails, callback, errback) {
         function (err, status) {
             if (err) {
                 logger.logError('userService - channelNotification - err marking chat as read');
+                logger.logError(err);
                 errback(err);
                 return;
             }
@@ -171,7 +179,8 @@ exports.countUsers = function (members, callback, errback) {
             if (err) {
                 errback(err)
             } else if (results < members.length){
-                console.log(results)
+                //console.log(results)
+            	logger.logError('user not exist');
                 var error = new Error('One of the users does not exist in database')
                 errback(error.toString())
                 return;
