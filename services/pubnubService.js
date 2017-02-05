@@ -1,3 +1,5 @@
+'use strict';
+
 var config = require("../config/config")
 var userModel = require('../models/userModel')
 var PubNub = require('pubnub');

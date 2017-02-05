@@ -1,3 +1,5 @@
+'use strict';
+
 var channelModel = require('../models/channelModel'),
     logger = require('../logger/logger')
 

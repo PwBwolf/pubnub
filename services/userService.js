@@ -1,3 +1,5 @@
+'use strict';
+
 var pnUserModel = require('../models/userModel'),
     logger = require('../logger/logger');
 
@@ -86,7 +88,8 @@ exports.lastAccess = function (channel, callback, errback) {
             'channels.name': channel.name
         }, {
             '$set': {
-                'channels.$.new_messages': 0
+                'channels.$.new_messages': 0,
+                'channels.$.last_access': Date.now()
             }
         },
         function (err, channel) {
@@ -110,9 +113,9 @@ exports.inactiveChat = function (chatChannel, callback, errback) {
         },
         {
             '$set': {
-                'channels.$.new_messages': 0
+                'channels.$.new_messages': 0,
                 //'channels.$.status': false,
-                //'channels.$.last_access': Date.now()
+                'channels.$.last_access': Date.now()
             }
         },
         function (err, channel) {

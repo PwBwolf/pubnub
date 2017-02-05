@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express'),
     router = express.Router(),
     userService = require('../services/userService'),

@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express'),
     router = express.Router(),
     jwtDecode = require('jwt-decode'),
@@ -5,7 +7,7 @@ var express = require('express'),
     channelService = require('../services/channelService'),
     pubnubService = require('../services/pubnubService'),
     async = require('async'),
-    logger = require('../logger/logger')
+    logger = require('../logger/logger');
 
 
 router.post('/create', function (req, res, next) {

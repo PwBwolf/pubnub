@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Load module dependencies
  */
@@ -8,10 +10,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
-var config = require('./config/config')
+var config = require('./config/config');
 var pnUser = require('./routes/userRoutes');
-var pnChannel = require('./routes/channelRoutes')
-var migration = require('./routes/migrationRoutes')
+var pnChannel = require('./routes/channelRoutes');
+var migration = require('./routes/migrationRoutes');
 
 /**
  * Create our Express application
@@ -35,7 +37,7 @@ app.use(cookieParser());
  */
 app.use(cors());
 
-app.use('/migration', migration)
+app.use('/migration', migration);
 app.use('/user', validateToken, pnUser);
 app.use('/channel', validateToken, pnChannel);
 
