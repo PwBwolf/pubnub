@@ -131,7 +131,7 @@ exports.inactiveChat = function (chatChannel, callback, errback) {
 };
 
 exports.addChannel = function (chatChannel, callback, errback) {
-    users = chatChannel.members;
+    var users = chatChannel.members;
     var newChannel = {
         name: chatChannel.name,
         new_messages: 1
