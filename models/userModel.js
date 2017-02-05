@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var logger = require('../logger/logger');
 
 var userSchema = new mongoose.Schema({
     uid: {type: String, required: true},
@@ -24,7 +25,8 @@ userSchema.pre('save', function (next) {
         if(err) {
             next(err);
         } else if(user.length > 0) {
-            console.log(user.length)
+            //console.log(user.length);
+        	logger.logInfo('pre save: ' + user.length);
             var error = new Error("uid exists in database");
             next(error);
         } else {
