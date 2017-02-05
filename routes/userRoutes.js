@@ -140,6 +140,42 @@ router.put('/readMessage', function (req, res, next) {
     })
 });
 
+router.put('/lastAccess', function (req, res, next) {
+    var decodedToken = jwtDecode(req.headers.token);
+    if (!req.body.name) {
+        logger.logError('userRoutes - readMessage - missing fields in req body');
+        logger.logError(err);
+        res.status(401).send({
+            error: {
+                status: 401
+            },
+            message: 'channel name bust be specified'
+        });
+    }
+    var userViewed= {
+        uid :decodedToken.uid,
+        name: req.body.name
+    };
+    userService.lastAccess(userViewed, function (status) {
+        logger.logInfo('userRoutes - readMessage - message updated as read');
+        res.status(201).send({
+            success: {
+                status:201
+            },
+            message: 'message updated as read'
+        });
+    }, function (err) {
+        logger.logError('userRoutes - readMessage - error updating message as read');
+        logger.logError(err);
+        res.status(401).send({
+            error: {
+                status: 401
+            },
+            message: err
+        });
+    })
+});
+
 //will accept an array of channels that will mark
 router.put('/closedWindow', function (req,res,next) {
     if (!req.body.name) {
