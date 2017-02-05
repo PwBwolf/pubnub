@@ -88,7 +88,7 @@ exports.inactiveChat = function (chatChannel, callback, errback) {
         {
             '$set': {
                 'channels.$.new_messages': 0,
-                'channels.$.status': false,
+                //'channels.$.status': false,
                 'channels.$.last_access': Date.now()
             }
         },
