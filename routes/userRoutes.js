@@ -144,9 +144,9 @@ router.put('/readMessage', function (req, res, next) {
 router.put('/closedWindow', function (req,res,next) {
     if (!req.body.name) {
         logger.logError('userRoutes - closedWindow - no channels are set in the req body');
-        res.status(400).send({
+        res.status(401).send({
             error: {
-                status: 400
+                status: 401
             },
             message: 'Specify at least one channel that user is no longer active in'
         })
@@ -159,9 +159,9 @@ router.put('/closedWindow', function (req,res,next) {
     logger.logInfo('userRoutes - closedWindow - updating these chats as inactive');
     userService.inactiveChat(inactiveChats, function (status) {
 
-        res.status(200).send({
+        res.status(201).send({
             success: {
-                status: status
+                status: 201
             },
             message: 'channel is marked as inactive'
         })
