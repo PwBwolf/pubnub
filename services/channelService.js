@@ -1,7 +1,7 @@
 'use strict';
 
 var channelModel = require('../models/channelModel'),
-    logger = require('../logger/logger')
+    logger = require('../logger/logger');
 
 exports.getChannel = function (channelId, callback, errback) {
     channelModel.find({'name':channelId}, function (err, channelDetails) {

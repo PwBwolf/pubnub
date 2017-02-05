@@ -3,6 +3,7 @@
 var config = require("../config/config")
 var userModel = require('../models/userModel')
 var PubNub = require('pubnub');
+var logger = require('../logger/logger');
 
 var pubnub = new PubNub({
     ssl: true,
@@ -16,9 +17,9 @@ var pubnub = new PubNub({
 });
 
 exports.addChannelToGroup = function (newChannel, callback, errback) {
-    self = this;
+    var self = this;
     var pubnubResults = [];
-    for(i = 0; i < newChannel.members.length; i++) {
+    for(var i = 0; i < newChannel.members.length; i++) {
         pubnub.channelGroups.addChannels(
             {
                 channels: [newChannel.name],
@@ -58,7 +59,7 @@ exports.grantChannel = function (newChannel, callback, errback) {
     userModel.find({
         uid: {$in: newChannel.members}
     }).select('auth_key').exec(function (err, data) {
-        for (i = 0; i < data.length ; i++) {
+        for (var i = 0; i < data.length ; i++) {
             auth_ids.push(data[i].auth_key)
         }
 
