@@ -66,7 +66,8 @@ exports.grantChannel = function (newChannel, callback, errback) {
             channel : newChannel.name,
             auth_key : auth_ids,
             read : true,
-            write : true
+            write : true,
+            ttl: 0
         },
             function (status) {
                 callback(status)
