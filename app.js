@@ -4,7 +4,7 @@
  * Load module dependencies
  */
 var express = require('express');
-var cors = require('cors')
+var cors = require('cors');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');

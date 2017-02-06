@@ -65,7 +65,8 @@ exports.messageRead = function (channel, callback, errback) {
             'channels.name': channel.name
         }, {
             '$set': {
-                'channels.$.new_messages': 0
+                'channels.$.new_messages': 0,
+                'channels.$.last_access': Date.now()
             }
         },
         function (err, channel) {
