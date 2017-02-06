@@ -19,7 +19,7 @@ exports.getChannelMembers = function (channelId, callback, errback) {
             errback(err);
             return
         }
-        if (result.name = undefined) {
+        if (result.name === undefined) {
             errback("channel does not exist")
             return
         }
