@@ -95,7 +95,7 @@ router.post('/create', function (req, res, next) {
             success: {
                 status: 201
             },
-            channel: results
+            channel: results[1]
         })
     })
 });

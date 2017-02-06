@@ -4,6 +4,7 @@ var config = require("../config/config")
 var userModel = require('../models/userModel')
 var PubNub = require('pubnub');
 var logger = require('../logger/logger');
+var async = require('async');
 
 var pubnub = new PubNub({
     ssl: true,
@@ -19,24 +20,47 @@ var pubnub = new PubNub({
 exports.addChannelToGroup = function (newChannel, callback, errback) {
     var self = this;
     var pubnubResults = [];
-    for(var i = 0; i < newChannel.members.length; i++) {
-        pubnub.channelGroups.addChannels(
-            {
-                channels: [newChannel.name],
-                channelGroup: newChannel.members[i]
-            },
-            function(status) {
-                if (status.error) {
-                    logger.logError("PUBNUB error");
-                    logger.logError(status.error);
-                    errback(status.error);
-                } else {
-                    pubnubResults.push(status)
-                }
-            }
-        );
-    }
-    callback(pubnubResults)
+//    for(var i = 0; i < newChannel.members.length; i++) {
+//        pubnub.channelGroups.addChannels(
+//            {
+//                channels: [newChannel.name],
+//                channelGroup: newChannel.members[i]
+//            },
+//            function(status) {
+//                if (status.error) {
+//                    logger.logError("PUBNUB error");
+//                    logger.logError(status.error);
+//                    errback(status.error);
+//                } else {
+//                    pubnubResults.push(status)
+//                }
+//            }
+//        );
+//    }
+//    callback(pubnubResults)
+    async.each(newChannel.members, function(member, cb) {
+    	pubnub.channelGroups.addChannels(
+              {
+                  channels: [newChannel.name],
+                  channelGroup: member
+              },
+              function(status) {
+                  if (status.error) {
+                      logger.logError("PUBNUB error");
+                      logger.logError(status.error);
+                      cb(status, null);
+                  } else {
+                      cb(null, 'success');
+                  }
+              }
+          );
+    }, function(err) {
+		if(err) {
+			errback(err);
+		} else {
+			callback('success');
+		}
+	})
 };
 
 exports.grantGroup = function (newUser, callback, errback) {
