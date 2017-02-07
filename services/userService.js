@@ -134,7 +134,7 @@ exports.addChannel = function (chatChannel, callback, errback) {
     var users = chatChannel.members;
     var newChannel = {
         name: chatChannel.name,
-        new_messages: 1
+        new_messages: 0
     };
     pnUserModel.update(
         {
@@ -166,7 +166,7 @@ exports.channelNotification = function (channelDetails, callback, errback) {
             "channels.name": channelDetails.name
         },
         {
-            '$set': {
+            '$inc': {
                 'channels.$.new_messages': 1
             }
         },
