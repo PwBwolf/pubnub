@@ -62,6 +62,7 @@ router.get('/info', function(req, res, next) {
 router.post('/enroll', function (req, res, next) {
   var decodedToken = jwtDecode(req.headers.token);
   var authKey = Date.now() + decodedToken.uid;
+  var glxChannels = config.glxChannels;
   var newUser = {
       uid: decodedToken.uid,
       channel_groups: [decodedToken.uid],
@@ -85,6 +86,19 @@ router.post('/enroll', function (req, res, next) {
                 logger.logError('userRoutes - enroll - pubnub error when creating user');
                 logger.logError(err);
                 callback(err, 'there was an error creating user')
+            })
+        },
+        function (callback) {
+            var initialsubscribtions = {
+                channels: glxChannels,
+                channelGroup: uid
+            };
+            pubnubService.glxChannelsSubscribe(initialsubscribtions, function (results) {
+                callback(null, results)
+            }, function (err) {
+                logger.logError('Channel not saved in users properly');
+                logger.logError(err);
+                callback(err, 'null')
             })
         }
     ], function(err, results) {

@@ -18,26 +18,6 @@ var pubnub = new PubNub({
 });
 
 exports.addChannelToGroup = function (newChannel, callback, errback) {
-    var self = this;
-    var pubnubResults = [];
-//    for(var i = 0; i < newChannel.members.length; i++) {
-//        pubnub.channelGroups.addChannels(
-//            {
-//                channels: [newChannel.name],
-//                channelGroup: newChannel.members[i]
-//            },
-//            function(status) {
-//                if (status.error) {
-//                    logger.logError("PUBNUB error");
-//                    logger.logError(status.error);
-//                    errback(status.error);
-//                } else {
-//                    pubnubResults.push(status)
-//                }
-//            }
-//        );
-//    }
-//    callback(pubnubResults)
     async.each(newChannel.members, function(member, cb) {
     	pubnub.channelGroups.addChannels(
               {
@@ -99,5 +79,19 @@ exports.grantChannel = function (newChannel, callback, errback) {
             });
 
     })
-
 };
+
+exports.glxChannelsSubscribe = function (initialChannels, callback, errback) {
+    pubnub.channelGroups.addChannels(
+        initialChannels,
+        function(status) {
+            if (status.error) {
+                logger.logError("PUBNUB error");
+                logger.logError(status.error);
+                errback(status, null);
+            } else {
+                callback(null, 'success');
+            }
+        }
+    );
+}
