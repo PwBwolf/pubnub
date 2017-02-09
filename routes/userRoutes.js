@@ -91,7 +91,7 @@ router.post('/enroll', function (req, res, next) {
         function (callback) {
             var initialsubscribtions = {
                 channels: glxChannels,
-                channelGroup: uid
+                channelGroup: newUser.uid
             };
             pubnubService.glxChannelsSubscribe(initialsubscribtions, function (results) {
                 callback(null, results)
